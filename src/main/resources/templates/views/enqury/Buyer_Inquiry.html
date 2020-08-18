@@ -91,24 +91,24 @@
                 }
                     , {field: 'fd_apply_bustype', title: '请购单业务类型', align: "center"}
                     // , {field: 'cPTName', title: '请购单采购类型', width: 110, align: "center"}
-                //     , {
-                //     field: 'fd_bid_opentime', title: '开标时间', align: "center", width: 110, templet: function (row) {
-                //         if (row.fd_edit == 'Y') {
-                //             return '';
-                //         } else {
-                //             return '<input type="text" class="layui-input layui-input-date" style="border: none;font-size: 13px;padding-bottom: 8px">';
-                //         }
-                //     }
-                // }
-                //     , {
-                //     field: 'fd_bid_closetime', title: '截标时间', align: "center", width: 110, templet: function (row) {
-                //         if (row.fd_edit == 'Y') {
-                //             return '';
-                //         } else {
-                //             return '<input type="text" class="layui-input layui-input-date" style="border: none;font-size: 13px;padding-bottom: 8px">';
-                //         }
-                //     }
-                // }
+                    //     , {
+                    //     field: 'fd_bid_opentime', title: '开标时间', align: "center", width: 110, templet: function (row) {
+                    //         if (row.fd_edit == 'Y') {
+                    //             return '';
+                    //         } else {
+                    //             return '<input type="text" class="layui-input layui-input-date" style="border: none;font-size: 13px;padding-bottom: 8px">';
+                    //         }
+                    //     }
+                    // }
+                    //     , {
+                    //     field: 'fd_bid_closetime', title: '截标时间', align: "center", width: 110, templet: function (row) {
+                    //         if (row.fd_edit == 'Y') {
+                    //             return '';
+                    //         } else {
+                    //             return '<input type="text" class="layui-input layui-input-date" style="border: none;font-size: 13px;padding-bottom: 8px">';
+                    //         }
+                    //     }
+                    // }
                     , {
                     field: '', title: '<a type="button" class="layui-btn layui-btn-sm" id="Choose_sup">选择供应商</a>'
                     , align: "center", templet: function (row) {
@@ -135,6 +135,7 @@
                     }
                 }
                     // , {field: 'fd_status', title: '发布状态', align: "center"}
+                    , {field: 'fd_remarks', title: '备注', align: "center"}
                     , {field: 'cDepName', title: '请购单部门', align: "center"}
                     , {field: 'cPersonName', title: '业务员', align: "center"}
                 ]
@@ -237,6 +238,51 @@
                     }
                 });
             }
+        });
+
+        //发布
+        $('#publish').on('click', function () {
+            let checkStatus = table.checkStatus('demo')
+                , data = checkStatus.data;
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].suppliername != undefined) {
+                    continue;
+                } else {
+                    return layer.alert('"' + data[i].fd_no + '"的供应商未进行选择');
+                }
+            }
+
+            $.ajax({
+                type: 'post'
+                , url: '/Generating_Quotation?table=primary'
+                , data: JSON.stringify(data)
+                , dataType: 'json'
+                , async: false
+                , contentType: 'application/json; charset=utf-8'
+                , beforeSend: function () {
+                    indexs = layer.load(1);
+                }
+                , success: function (res) {
+                    if (res.code == "0") {
+                        layer.msg('发布成功！', {
+                            offset: '15px'
+                            , icon: 1
+                            , time: 1000
+                        }, function () {
+                            layer.close(indexs);
+                            location.reload();
+                        });
+                    } else {
+                        layer.msg('发布失败！', {
+                            offset: '15px'
+                            , icon: 2
+                            , time: 1000
+                        }, function () {
+                            layer.close(indexs);
+                        });
+                    }
+                }
+            })
         });
     });
 </script>

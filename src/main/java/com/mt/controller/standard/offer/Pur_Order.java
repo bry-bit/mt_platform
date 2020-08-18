@@ -1,4 +1,4 @@
-package com.mt.controller.standard;
+package com.mt.controller.standard.offer;
 
 import com.mt.util.RandomUtil;
 import org.springframework.stereotype.Controller;

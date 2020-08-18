@@ -76,7 +76,7 @@
                               fd_apply_department,
                               fd_apply_bustype, fd_apply_purtype, fd_bid_opentime, fd_bid_closetime, fd_supplier_name,
                               fd_supplier_code, fd_quotation_tatus)
-        values (REPLACE(NEWID(), '-', ''), #{fd_inquiryid}, #{fd_no}, #{fd_apply_no}, #{fd_applicant}, #{fd_creat_time},
+        values (#{fd_id}, #{fd_inquiryid}, #{fd_no}, #{fd_apply_no}, #{fd_applicant}, #{fd_creat_time},
                 #{fd_apply_time},
                 #{fd_apply_department}, #{fd_apply_bustype}, #{fd_apply_purtype}, #{fd_bid_opentime},
                 #{fd_bid_closetime},
@@ -94,7 +94,7 @@
     </update>
 
     <!--查询报价单主表数据-->
-    <select id="Select_order" resultType="String">
+    <select id="Select_order" resultType="com.mt.pojo.standard.cy_order">
         select *
         from cy_order  where 1 = 1
         <if test="fd_creat_person != null and fd_creat_person != ''">
@@ -114,7 +114,7 @@
                                        fd_model, fd_unit, fd_purchase_avaqty, fd_tax,
                                        fd_ship_addr, fd_arrival_house, fd_bid_opentime, fd_bid_closetime,
                                        fd_supplier_name, fd_supplier_code)
-        values (REPLACE(NEWID(), '-', ''), #{fd_parent_id}, #{fd_inquiry_ids}, #{fd_inventory_name}, #{fd_inventory_no},
+        values (#{fd_id}, #{fd_parent_id}, #{fd_inquiry_ids}, #{fd_inventory_name}, #{fd_inventory_no},
                 #{fd_model},
                 #{fd_unit}, #{fd_purchase_avaqty}, #{fd_tax},
                 #{fd_ship_addr}, #{fd_arrival_house}, #{fd_bid_opentime}, #{fd_bid_closetime}, #{fd_supplier_name},
@@ -136,7 +136,7 @@
     </update>
 
     <!--根据报价单主表ID查询报价单子表数据-->
-    <select id="Select_orderson" parameterType="com.mt.pojo.standard.cy_order_detailed">
+    <select id="Select_orderson" resultType="com.mt.pojo.standard.cy_order_detailed">
         select *
         from cy_order_detailed
         where fd_parent_id = #{fd_parent_id}
@@ -146,22 +146,6 @@
     <!-- select REPLACE(NEWID(),'-','') as fd_inquiryid ,fd_id,fd_no,fd_applicant,getdate() as fd_creat_time,fd_apply_time,fd_apply_department,fd_apply_bustype,
      fd_apply_purtype,fd_bid_opentime,fd_bid_closetime,fd_supplier_name,fd_supplier_code
      from cy_inquiry where fd_status='1'-->
-
-    <!--    <select id="" resultType="com.mt.pojo.standard.cy_inquiry_detailed">-->
-    <!--        select c.*, cs.suppliername, cs.sum, ci.fd_edit-->
-    <!--        from cy_inquiry_detailed c-->
-    <!--                     left join cy_inquiry ci on c.fd_id = ci.fd_id-->
-    <!--                     left join (select               s.ID,-->
-    <!--                                        suppliername=(stuff((SELECT ',' + suppliername-->
-    <!--                                                             FROM cy_supplier-->
-    <!--                                                             WHERE ID = s.ID-->
-    <!--                                                             FOR xml path ('')), 1, 1, '')),-->
-    <!--                                                     count(s.suppliername) sum-->
-    <!--                                from cy_supplier s-->
-    <!--                                GROUP BY s.ID) cs on c.fd_id = cs.ID-->
-    <!--        where fd_parent_id = #{fd_parent_id}-->
-    <!--          and c.fd_status is null-->
-    <!--    </select>-->
 
     <!-- 该询价单是否由子表询价 -->
     <update id="update">

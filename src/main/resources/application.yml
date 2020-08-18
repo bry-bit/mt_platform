@@ -43,7 +43,7 @@ spring:     #定义springmvc视图解析器
                   PhysicalNamingStrategyStandardImpl
 mybatis-plus:
   type-aliases-package: com.mt.pojo.*
-  mapper-locations: classpath:/mybatis/mappers/**/*.xml
+  mapper-locations: classpath:/mybatis/**/**/*.xml
   configuration:
     map-underscore-to-camel-case: true
 logging:

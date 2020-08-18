@@ -13,6 +13,7 @@ import lombok.experimental.Accessors;
 public class cy_order_detailed {
     private String fd_id;//子表ID
     private String fd_parent_id;//关联主表ID
+    private String fd_inquiry_ids;//询价单子表ID
     private String fd_inventory_name;//存货名称
     private String fd_inventory_no;//存货编号
     private String fd_model;//规格型号
@@ -40,4 +41,5 @@ public class cy_order_detailed {
     private String fd_quotation_tatus;//报价状态
     private String fd_add1;//备用字段
     private String fd_add2;//备用字段
+
 }
