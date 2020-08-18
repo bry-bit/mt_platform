@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>新增角色</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="collection/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="collection/style/admin.css" media="all">
+</head>
+<body>
+<div class="layui-card-body">
+    <form class="layui-form layui-form-pane" action="">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">角色名</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="number" id="username" autocomplete="off" class="layui-input"
+                           placeholder="请输入角色名">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">拥有权限</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="number" id="authority" autocomplete="off" class="layui-input"
+                           placeholder="请输入权限描述">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item" pane="">
+            <label class="layui-form-label">是否启用</label>
+            <div class="layui-input-block" id="choose">
+                <input type="radio" name="Menu" value="Y" title="启用" checked="">
+                <input type="radio" name="Menu" value="N" title="停用">
+                <input type="radio" name="Menu" value="D" title="禁用">
+            </div>
+        </div>
+        <div class="layui-form-item" style="text-align: center">
+            <button type="button" class="layui-btn layui-btn-radius layui-btn-fluid" id="Confirm_submit">确认提交</button>
+            <!--            <button type="button" class="layui-btn" id="Confirm_submit">确认提交</button>-->
+        </div>
+    </form>
+</div>
+
+<script src="collection/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: 'collection/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'table', 'form', 'layer'], function () {
+        let $ = layui.$
+            , table = layui.table
+            , layer = layui.layer;
+
+        $('#Confirm_submit').on('click', function () {
+            let lists = [];
+            let list = {};
+            //进行空数据的校验
+            if ($('#username').val() == ''){
+                return layer.alert("角色名不能为空！");
+            }else {
+                list.name = $('#username').val();//角色名
+            }
+            if ($('#authority').val() == ''){
+                return layer.alert("权限描述不能为空！");
+            }else {
+                list.reson = $('#authority').val();//拥有权限
+            }
+            list.enable = $('#choose input[name="Menu"]:checked ').val();//是否启用
+            lists.push(list);
+            // layer.alert(JSON.stringify(lists));
+            
+            layer.confirm('是否提交？', function (index) {
+                
+            });
+            // alert($('#choose input[name="Menu"]:checked ').val());
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mt.mapper.standard.Pur_EnquiryMapper">
+    <!-- 获取U8请购单到询价表中，并展现相应的供应商数据 -->
+    <select id="Main_sheet" resultType="com.mt.pojo.standard.cy_inquiry">
+        select c.*, Person.cPersonName, cs.suppliername, cs.sum, Department.cDepName, PurchaseType.cPTName
+        from cy_inquiry c
+                     left join [UFDATA_001_2015].[dbo].Person on Person.cPersonCode = c.fd_applicant
+                     left join [UFDATA_001_2015].[dbo].Department on Department.cDepCode = c.fd_apply_department
+                     left join [UFDATA_001_2015].[dbo].PurchaseType on PurchaseType.cPTCode = c.fd_apply_purtype
+                     left join (select               s.ID,
+                                        suppliername=(stuff((SELECT ',' + suppliername
+                                                             FROM cy_supplier
+                                                             WHERE ID = s.ID
+                                                             FOR xml path ('')), 1, 1, '')),
+                                                     count(s.suppliername) sum
+                                from cy_supplier s
+                                GROUP BY s.ID) cs on c.fd_no = cs.ID
+        where Person.cPersonName = #{cPersonName}
+          and c.fd_status is null
+    </select>
+
+    <!--根据询价单主表ID更新标准流程询价单主表数据-->
+    <update id="Main_inquiry">
+        update cy_inquiry
+        set fd_modificatio_person=#{fd_modificatio_person},
+            fd_modificatio_time  =getdate(),
+            fd_supplier_name=#{fd_supplier_name},
+            fd_supplier_code=#{fd_supplier_code},
+            fd_bid_opentime=#{fd_bid_opentime},
+            fd_bid_closetime=#{fd_bid_closetime},
+            fd_edit=#{fd_edit},
+            fd_status=#{fd_status}
+        where fd_id = #{fd_id}
+    </update>
+
+    <!--根据询价单子表ID更新标准流程询价单子表数据-->
+    <update id="Person_inquiry">
+        update cy_inquiry_detailed
+        set fd_supplier_name=#{fd_supplier_name},
+            fd_supplier_code=#{fd_supplier_code},
+            fd_bid_opentime=#{fd_bid_opentime},
+            fd_bid_closetime=#{fd_bid_closetime},
+            fd_status=#{fd_status},
+            fd_remarks=#{fd_remarks}
+        where fd_id = #{fd_id}
+    </update>
+
+    <!-- 根据询价单主表ID查询询价单子表数据-->
+    <select id="Person_inqdata" parameterType="String" resultType="com.mt.pojo.standard.cy_inquiry_detailed">
+        select c.*, cs.suppliername, cs.sum, ci.fd_edit
+        from cy_inquiry_detailed c
+                     left join cy_inquiry ci on c.fd_id = ci.fd_id
+                     left join (select               s.ID,
+                                        suppliername=(stuff((SELECT ',' + suppliername
+                                                             FROM cy_supplier
+                                                             WHERE ID = s.ID
+                                                             FOR xml path ('')), 1, 1, '')),
+                                                     count(s.suppliername) sum
+                                from cy_supplier s
+                                GROUP BY s.ID) cs on c.fd_id = cs.ID
+        where fd_parent_id = #{fd_parent_id}
+          and c.fd_status is null
+    </select>
+
+    <!--获取报价单当天最大的流水号数字-->
+    <select id="max_orderno" resultType="String">
+        select max(substring(fd_apply_no, 10, 6)) as aa
+        from cy_order
+        where convert(varchar(10), fd_creat_time, 120) = convert(varchar(10), getdate(), 120)
+    </select>
+
+    <!--新增报价单-->
+    <insert id="Main_order" parameterType="com.mt.pojo.standard.cy_order">
+        insert into cy_order (fd_id, fd_inquiryid, fd_no, fd_apply_no, fd_applicant, fd_creat_time, fd_apply_time,
+                              fd_apply_department,
+                              fd_apply_bustype, fd_apply_purtype, fd_bid_opentime, fd_bid_closetime, fd_supplier_name,
+                              fd_supplier_code, fd_quotation_tatus)
+        values (REPLACE(NEWID(), '-', ''), #{fd_inquiryid}, #{fd_no}, #{fd_apply_no}, #{fd_applicant}, #{fd_creat_time},
+                #{fd_apply_time},
+                #{fd_apply_department}, #{fd_apply_bustype}, #{fd_apply_purtype}, #{fd_bid_opentime},
+                #{fd_bid_closetime},
+                #{fd_supplier_name}, #{fd_supplier_code}, #{fd_quotation_tatus})
+    </insert>
+
+    <!--更新报价单主表数据-->
+    <update id="order_update" parameterType="com.mt.pojo.standard.cy_order">
+        update cy_order
+        set fd_modificatio_person=#{fd_modificatio_person},
+            fd_modificatio_time=getdate(),
+            fd_quotation_tatus=#{fd_quotation_tatus},
+            fd_remarks=#{fd_remarks}
+        where fd_id = #{fd_id}
+    </update>
+
+    <!--查询报价单主表数据-->
+    <select id="Select_order" resultType="String">
+        select *
+        from cy_order  where 1 = 1
+        <if test="fd_creat_person != null and fd_creat_person != ''">
+            and fd_creat_person = #{fd_creat_person}
+        </if>
+        <if test="fd_supplier_name != null and fd_supplier_name != ''">
+            and fd_supplier_name = #{fd_supplier_name}
+        </if>
+        <if test="fd_quotation_tatus != null and fd_quotation_tatus != ''">
+            and fd_quotation_tatus = #{fd_quotation_tatus}
+        </if>
+    </select>
+
+    <!--插入报价单子表数据-->
+    <insert id="Person_order" parameterType="com.mt.pojo.standard.cy_order_detailed">
+        insert into cy_order_detailed (fd_id, fd_parent_id, fd_inquiry_ids, fd_inventory_name, fd_inventory_no,
+                                       fd_model, fd_unit, fd_purchase_avaqty, fd_tax,
+                                       fd_ship_addr, fd_arrival_house, fd_bid_opentime, fd_bid_closetime,
+                                       fd_supplier_name, fd_supplier_code)
+        values (REPLACE(NEWID(), '-', ''), #{fd_parent_id}, #{fd_inquiry_ids}, #{fd_inventory_name}, #{fd_inventory_no},
+                #{fd_model},
+                #{fd_unit}, #{fd_purchase_avaqty}, #{fd_tax},
+                #{fd_ship_addr}, #{fd_arrival_house}, #{fd_bid_opentime}, #{fd_bid_closetime}, #{fd_supplier_name},
+                #{fd_supplier_code})
+    </insert>
+
+    <!-- 根据报价单子表ID更新数据-->
+    <update id="order_sonUpdate" parameterType="com.mt.pojo.standard.cy_order_detailed">
+        update cy_order_detailed
+        set fd_offer=#{fd_offer},
+            fd_offer_time=#{fd_offer_time},
+            fd_qualified=#{fd_qualified},
+            fd_attachment=#{fd_attachment},
+            fd_return=#{fd_return},
+            fd_return_reason=#{fd_return_reason},
+            fd_remarks=#{fd_remarks},
+            fd_quotation_tatus=#{fd_quotation_tatus}
+        where fd_id = #{fd_id}
+    </update>
+
+    <!--根据报价单主表ID查询报价单子表数据-->
+    <select id="Select_orderson" parameterType="com.mt.pojo.standard.cy_order_detailed">
+        select *
+        from cy_order_detailed
+        where fd_parent_id = #{fd_parent_id}
+    </select>
+
+    <!--sql生成数据ID-->
+    <!-- select REPLACE(NEWID(),'-','') as fd_inquiryid ,fd_id,fd_no,fd_applicant,getdate() as fd_creat_time,fd_apply_time,fd_apply_department,fd_apply_bustype,
+     fd_apply_purtype,fd_bid_opentime,fd_bid_closetime,fd_supplier_name,fd_supplier_code
+     from cy_inquiry where fd_status='1'-->
+
+    <!--    <select id="" resultType="com.mt.pojo.standard.cy_inquiry_detailed">-->
+    <!--        select c.*, cs.suppliername, cs.sum, ci.fd_edit-->
+    <!--        from cy_inquiry_detailed c-->
+    <!--                     left join cy_inquiry ci on c.fd_id = ci.fd_id-->
+    <!--                     left join (select               s.ID,-->
+    <!--                                        suppliername=(stuff((SELECT ',' + suppliername-->
+    <!--                                                             FROM cy_supplier-->
+    <!--                                                             WHERE ID = s.ID-->
+    <!--                                                             FOR xml path ('')), 1, 1, '')),-->
+    <!--                                                     count(s.suppliername) sum-->
+    <!--                                from cy_supplier s-->
+    <!--                                GROUP BY s.ID) cs on c.fd_id = cs.ID-->
+    <!--        where fd_parent_id = #{fd_parent_id}-->
+    <!--          and c.fd_status is null-->
+    <!--    </select>-->
+
+    <!-- 该询价单是否由子表询价 -->
+    <update id="update">
+        update cy_inquiry
+        set fd_edit=#{fd_edit}
+        where fd_id = #{fd_id}
+    </update>
+</mapper>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mt.mapper.permission.User_RegistrationMapper">
+    <resultMap id="BaseResultMap" type="com.mt.pojo.permission.cy_user">
+        <result column="fd_id" property="fd_id" jdbcType="INTEGER"/>
+        <result column="fd_login_name" property="fd_login_name" jdbcType="VARCHAR"/>
+        <result column="fd_user_name" property="fd_user_name" jdbcType="VARCHAR"/>
+        <result column="fd_password" property="fd_password" jdbcType="VARCHAR"/>
+        <result column="fd_iphone" property="fd_iphone" jdbcType="VARCHAR"/>
+        <result column="fd_creat_time" property="fd_creat_time" jdbcType="DATE"/>
+        <result column="fd_applicant" property="fd_applicant" jdbcType="VARCHAR"/>
+        <result column="fd_modificatio_time" property="fd_modificatio_time" jdbcType="DATE"/>
+        <result column="fd_modificatio_person" property="fd_modificatio_person" jdbcType="VARCHAR"/>
+        <result column="fd_is_avaible" property="fd_is_avaible" jdbcType="VARCHAR"/>
+        <result column="limits_state" property="limits_state" jdbcType="VARCHAR"/>
+        <result column="limits_type" property="limits_type" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!-- 用户注册插入到用户表中 -->
+    <insert id="insert">
+        insert into cy_user(fd_id, fd_login_name, fd_user_name, fd_password, fd_iphone, fd_creat_time, fd_applicant,
+                            fd_modificatio_time, fd_modificatio_person, fd_is_avaible, limits_state, limits_type)
+        VALUES (#{fd_id}, #{fd_login_name}, #{fd_user_name}, #{fd_password}, #{fd_iphone}, #{fd_creat_time},
+                #{fd_applicant}, #{fd_modificatio_time}, #{fd_modificatio_person}, #{fd_is_avaible},
+                #{limits_state}, #{limits_type})
+    </insert>
+
+    <!-- 判断该用户是否存在 -->
+    <select id="IsOrNotUser" resultMap="BaseResultMap">
+        select *
+        from cy_user
+        where fd_user_name = #{fd_user_name}
+    </select>
+
+    <!-- 判断该登陆名是否存在 -->
+    <select id="IsOrNotLogin" resultMap="BaseResultMap">
+        select *
+        from cy_user
+        where fd_login_name = #{fd_login_name}
+    </select>
+</mapper>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>展现已选择供应商列表</title>
+    <meta name="renderer" content="webkit">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" href="collection/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="collection/layuiadmin/style/admin.css" media="all">
+</head>
+<style>
+    .layui-table-cell {
+        font-size: 12px;
+    }
+</style>
+<body>
+<div class="layui-card">
+    <div class="layui-card-body">
+        <table class="layui-hide" id="demo" lay-filter="demo"></table>
+    </div>
+</div>
+
+<script src="collection/layuiadmin/layui/layui.js"></script>
+<script>
+    Date.prototype.pattern = function (fmt) {
+        let o = {
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "h+": this.getHours() % 12 == 0 ? 12 : this.getHours() % 12, //小时
+            "H+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds(), //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds() //毫秒
+        };
+        let week = {
+            "0": "/u65e5",
+            "1": "/u4e00",
+            "2": "/u4e8c",
+            "3": "/u4e09",
+            "4": "/u56db",
+            "5": "/u4e94",
+            "6": "/u516d"
+        };
+        if (/(y+)/.test(fmt)) {
+            fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        }
+        if (/(E+)/.test(fmt)) {
+            fmt = fmt.replace(RegExp.$1, ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "/u661f/u671f" : "/u5468") : "") + week[this.getDay() + ""]);
+        }
+        for (let k in o) {
+            if (new RegExp("(" + k + ")").test(fmt)) {
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            }
+        }
+        return fmt;
+    };
+
+    layui.config({
+        base: 'collection/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'table', 'laydate', 'layer'], function () {
+        let $ = layui.$
+            , layer = layui.layer
+            , indexs = ''
+            , table = layui.table
+            , laydate = layui.laydate
+            , index = parent.layer.getFrameIndex(window.name);
+
+        table.render({
+            elem: '#demo'
+            , url: '/ExistingSupplier?ID=' + window.localStorage.getItem('ID')
+            , height: 'full-85'
+            , cols: [
+                [
+                    {type: 'numbers'}
+                    , {field: 'suppliercode', title: '供应商编码', align: "center"}
+                    , {field: 'suppliername', title: '供应商名称', align: "center"}
+                    , {
+                    field: 'startdate', title: '开标日期', align: "center", edit: 'text', event: 'date'
+                    , templet: function (row) {
+                        return (new Date(row.startdate)).pattern("yyyy-MM-dd");
+                    }
+                }
+                    , {
+                    field: 'enddate', title: '结标日期', align: "center", edit: 'text', event: 'date2'
+                    , templet: function (row) {
+                        return (new Date(row.enddate)).pattern("yyyy-MM-dd");
+                    }
+                }
+                    , {
+                    field: '', title: '操作', align: "center", templet: function () {
+                        return '<a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="save">保存</a>'
+                            + '<a class="layui-btn layui-btn-sm layui-bg-cyan" lay-event="del">删除</a>'
+                    }
+                }
+                ]
+            ]
+            , done: function (res) {
+
+            }
+        });
+
+        //监听行工具事件
+        table.on('tool(demo)', function (obj) {
+            let data = obj.data;
+            if (obj.event === 'date') {
+                let field = $(this).data('field');
+                laydate.render({
+                    elem: this.firstChild
+                    , show: true //直接显示
+                    , closeStop: this
+                    , calendar: true
+                    , theme: '#393D49'
+                    , done: function (value, date) {
+                        obj.update({
+                            [field]: value
+                        });
+                    }
+                });
+            } else if (obj.event === 'date2') {
+                let field = $(this).data('field');
+                laydate.render({
+                    elem: this.firstChild
+                    , show: true //直接显示
+                    , closeStop: this
+                    , calendar: true
+                    , theme: '#393D49'
+                    , done: function (value, date) {
+                        obj.update({
+                            [field]: value
+                        });
+                    }
+                });
+            } else if (obj.event === 'save') {
+                let tableBack = table.cache["demo"];
+                let lists = [];
+                for (let i = 0; i < tableBack.length; i++) {
+                    let list = {};
+                    list.ID = window.localStorage.getItem('ID');
+                    list.suppliercode = tableBack[i].suppliercode;
+                    list.suppliername = tableBack[i].suppliername;
+                    list.startdate = tableBack[i].startdate;
+                    list.enddate = tableBack[i].enddate;
+                    lists.push(list);
+                }
+                console.log(JSON.stringify(lists));
+                $.ajax({
+                    url: '/DateChanged'
+                    , data: JSON.stringify(lists)
+                    , dataType: 'json'
+                    , contentType: 'application/json; charset=utf-8'
+                    , beforeSend: function () {
+                        indexs = layer.load(1);
+                    }
+                    , type: "post"
+                    , success: function (res) {
+                        if (res.code == "0") {
+                            layer.msg('保存成功！', {
+                                offset: '15px'
+                                , icon: 1
+                                , time: 1000
+                            }, function () {
+                                layer.close(indexs);
+                                location.reload(index);
+                            });
+                        } else {
+                            layer.msg('保存失败！', {
+                                offset: '15px'
+                                , icon: 2
+                                , time: 1000
+                            }, function () {
+                                layer.close(indexs);
+                            });
+                        }
+                    }
+                })
+            } else if (obj.event === 'del') {
+                $.ajax({
+                    url: '/'
+                    , data: JSON.stringify(data)
+                    , dataType: 'json'
+                    , contentType: 'application/json; charset=utf-8'
+                    , beforeSend: function () {
+                        indexs = layer.load(1);
+                    }
+                    , type: "post"
+                    , success: function (res) {
+                        if (res.code == "0") {
+                            layer.msg('删除成功！', {
+                                offset: '15px'
+                                , icon: 1
+                                , time: 1000
+                            }, function () {
+                                layer.close(indexs);
+                                location.reload(index);
+                            });
+                        } else {
+                            layer.msg('删除失败！', {
+                                offset: '15px'
+                                , icon: 1
+                                , time: 1000
+                            }, function () {
+                                layer.close(indexs);
+                            });
+                        }
+                    }
+                })
+            }
+        });
+    });
+</script>
+</body>
+</html>

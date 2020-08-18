@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mt.mapper.manage.FileUploadMapper">
+    <resultMap id="BaseResultMap" type="com.mt.pojo.manage.FileInfo">
+        <result column="fd_id" property="fd_id" jdbcType="INTEGER"/>
+        <result column="fd_subject_id" property="fd_subject_id" jdbcType="VARCHAR"/>
+        <result column="fd_file_name" property="fd_file_name" jdbcType="DATE"/>
+        <result column="fd_time" property="fd_time" jdbcType="VARCHAR"/>
+        <result column="fd_url" property="fd_url" jdbcType="VARCHAR"/>
+        <result column="fd_creat_person" property="fd_creat_person" jdbcType="DATE"/>
+    </resultMap>
+
+    <insert id="insert">
+        insert into cy_manage_files (fd_id, fd_subject_id, fd_file_name, fd_time, fd_url, fd_creat_person,suppliername,suppliercode,supplierid)
+        VALUES (#{fd_id}, #{fd_subject_id}, #{fd_file_name}, #{fd_time}, #{fd_url}, #{fd_creat_person},#{suppliername},#{suppliercode},#{supplierid})
+    </insert>
+
+    <select id="select1" resultMap="BaseResultMap">
+        SELECT top 10 *
+        FROM (SELECT *, ROW_NUMBER() OVER (Order by fd_time desc ) AS RowNumber from cy_manage_files) as b
+        where RowNumber between ${pl} and ${limit}
+    </select>
+
+    <select id="select2" resultMap="BaseResultMap">
+        select *
+        from cy_manage_files
+        where 1 = 1
+        order by fd_time desc
+    </select>
+
+    <select id="SelectTableController" parameterType="String" resultMap="BaseResultMap">
+        select fd_file_name, fd_time, fd_creat_person
+        from cy_manage_files
+        where fd_creat_person = #{ID}
+    </select>
+
+
+    <select id="SelectUrl" parameterType="String" resultType="String">
+        select fd_url
+        from cy_manage_files
+        where fd_id = #{ID}
+    </select>
+
+    <insert id="insertdown">
+        insert into cy_manage_download (fd_id, fd_download_number, fd_download_person, fd_fileid, fd_download_date)
+        VALUES (#{fd_id}, '1', #{fd_download_person}, #{fd_fileid}, #{fd_download_date})
+    </insert>
+
+    <select id="SelectNumber" parameterType="String" resultType="com.mt.pojo.manage.DownLoad">
+        SELECT top 10 *
+        FROM (SELECT *,
+                     ROW_NUMBER() OVER (Order by fd_download_date desc )
+                             AS RowNumber
+              from cy_manage_download) as b
+        where RowNumber between ${pl} and ${limit}
+    </select>
+
+    <select id="SelectAll" parameterType="String" resultType="com.mt.pojo.manage.DownLoad">
+        select fd_fileid,
+               stuff((select ',' + fd_download_person
+                      from cy_manage_download
+                      where fd_fileid = e.fd_fileid
+                      for xml path ('')), 1, 1, '') as
+                                                       fd_download_person,
+               sum(fd_download_number)              as fd_download_number
+        from (select down.fd_fileid, down.fd_download_date, down.fd_download_person, down.fd_download_number
+              from cy_manage_files fi
+                           left join cy_manage_download down
+                      on fi.fd_id = down.fd_fileid) E
+        group by fd_fileid
+    </select>
+</mapper>

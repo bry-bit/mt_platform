@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mt.mapper.standard.Pur_SelectSupMapper">
+    <!-- 查询U8供应商档案表 -->
+    <select id="Chose_sup" resultType="com.mt.pojo.standard.cy_supplier">
+        select cVenCode as suppliercode, cVenName as suppliername
+        from [UFDATA_001_2015].[dbo].Vendor
+    </select>
+
+    <!-- 进行供应商档案数据的分页操作 -->
+    <select id="Chose_sup_page" resultType="com.mt.pojo.standard.cy_supplier">
+        select top ${limit} d.*
+        from (SELECT c.*, row_number() over (ORDER BY suppliercode ASC) as rownumber
+              FROM (
+                           select cVenCode as suppliercode, cVenName as suppliername
+                           from [UFDATA_001_2015].[dbo].Vendor) as c) as d
+        WHERE rownumber > ((${limit} * ${page}) - ${limit})
+    </select>
+
+    <!--供应商平台中新增供应商档案-->
+    <insert id="addsupp">
+        INSERT INTO cy_supplier (ID, suppliername, suppliercode, startdate, enddate, type)
+        VALUES (#{ID}, #{suppliername}, #{suppliercode}, #{startdate}, #{enddate}, 1)
+    </insert>
+
+    <!--根据流程ID查询供应商平台中的供应商档案表数据-->
+    <select id="select_supp" parameterType="String" resultType="com.mt.pojo.standard.cy_supplier">
+        select *
+        from cy_supplier
+                where 1 = 1
+        <if test="ID != null and ID != ''">
+            and ID = #{ID}
+        </if>
+        <if test="suppliername != null and suppliername != ''">
+            and suppliername = #{suppliername}
+        </if>
+        <if test="type != null and type != ''">
+            and type = #{type}
+        </if>
+    </select>
+
+    <!-- 修改供应商的开标、结标时间 -->
+    <update id="update_time">
+        update cy_supplier
+        set startdate=#{startdate},
+            enddate=#{enddate}
+        where ID = #{ID}
+          and suppliername = #{suppliername}
+          and suppliercode = #{suppliercode}
+    </update>
+
+    <!-- 删除已选择的供应商 -->
+    <delete id="delete_message">
+        delete
+        from cy_supplier
+        where ID = #{ID}
+          and suppliername = #{suppliername}
+          and suppliercode = #{suppliercode}
+    </delete>
+</mapper>

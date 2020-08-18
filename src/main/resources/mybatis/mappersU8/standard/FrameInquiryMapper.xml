@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mt.mapper.frame.FrameInquiryMapper">
+
+    <insert id="excel1">
+        insert into cy_kinquiry (fd_id,fd_creat_person,fd_creat_time,fd_filename,fd_url)
+        values (#{fd_id},#{fd_creat_person},#{fd_creat_time},#{fd_filename},#{fd_url})
+    </insert>
+    <insert id="excel2">
+        insert into cy_kinquiry_details (fd_id,fd_parent_id,fd_order,fd_inventory_name,fd_inventory_no,fd_brand,fd_model,fd_parameter,fd_unit,fd_price,fd_cycle,fd_methods
+        ,fd_technical_para,fd_validity,fd_remarks)
+        values(#{fd_id},#{fd_parent_id},#{fd_order},#{fd_inventory_name},#{fd_inventory_no},#{fd_brand},#{fd_model},#{fd_parameter},#{fd_unit},#{fd_price},#{fd_cycle},#{fd_methods}
+          ,#{fd_technical_para},#{fd_validity},#{fd_remarks})
+    </insert>
+</mapper>

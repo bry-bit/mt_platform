@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mt.mapper.manage.Manage_ThemeMapper">
+    <resultMap id="BaseResultMap" type="com.mt.pojo.manage.cy_manage_subject">
+        <result column="fd_id" property="fd_id" jdbcType="INTEGER"/>
+        <result column="fd_subject" property="fd_subject" jdbcType="VARCHAR"/>
+        <result column="fd_creat_time" property="fd_creat_time" jdbcType="DATE"/>
+        <result column="fd_creat_person" property="fd_creat_person" jdbcType="VARCHAR"/>
+        <result column="fd_modificatio_person" property="fd_modificatio_person" jdbcType="VARCHAR"/>
+        <result column="fd_modificatio_time" property="fd_modificatio_time" jdbcType="DATE"/>
+    </resultMap>
+
+    <!-- 查询相关创建人下的主题信息 -->
+    <select id="select" resultMap="BaseResultMap">
+        select *
+        from cy_manage_subject
+                where 1 = 1
+        <if test="fd_creat_person != '' and fd_creat_person != null">
+            and fd_creat_person = #{fd_creat_person}
+        </if>
+    </select>
+
+    <!-- 查询相关创建人下的主题信息的分页 -->
+    <select id="selectPage" resultMap="BaseResultMap">
+        select top ${limit} b.*
+                from (select a.*, ROW_NUMBER() over (ORDER BY fd_creat_time ASC) as rownumber
+                from (select *
+                      from cy_manage_subject
+                where 1 = 1
+        <if test="fd_creat_person != '' and fd_creat_person != null">
+            and fd_creat_person = #{fd_creat_person}
+        </if>) a) b
+            where rownumber > ((${limit} * ${page}) - ${limit})
+            order by b.fd_creat_time asc
+    </select>
+
+
+    <!-- 创建新的主题信息 -->
+    <insert id="insert">
+        insert into cy_manage_subject(fd_id, fd_subject, fd_creat_person, fd_creat_time, fd_modificatio_person,
+                                      fd_modificatio_time)
+        values (#{fd_id}, #{fd_subject}, #{fd_creat_person}, #{fd_creat_time}, #{fd_modificatio_person},
+                #{fd_modificatio_time})
+    </insert>
+
+    <!-- 修改已有的主题名称 -->
+    <update id="update">
+        update cy_manage_subject
+        set fd_modificatio_time=#{fd_modificatio_time},
+            fd_subject=#{fd_subject}
+        where fd_id = #{fd_id}
+    </update>
+
+    <!-- 删除主题信息 -->
+    <delete id="delete">
+        delete
+        from cy_manage_subject
+        where fd_id = #{fd_id}
+    </delete>
+</mapper>

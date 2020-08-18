@@ -1,0 +1,51 @@
+server:
+  port: 8060
+spring:     #定义springmvc视图解析器
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/views/
+    suffix: .html
+    mode: LEGACYHTML5
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+  resources:
+    chain:
+      strategy:
+        content:
+          enabled: true
+          paths: /**
+  datasource:
+    test1:
+      type: com.alibaba.druid.pool.DruidDataSource
+      driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+      #        jdbc-url: jdbc:sqlserver://117.50.54.210:1433;DatabaseName=MTsupplier
+      jdbc-url: jdbc:sqlserver://127.0.0.1:1433;DatabaseName=MTsupplier
+      username: sa
+      password: 12345678
+    #      password: Aa123456
+    test2:
+      type: com.alibaba.druid.pool.DruidDataSource
+      driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+      #        jdbc-url: jdbc:sqlserver://117.50.54.210:1433;DatabaseName=UFDATA_001_2015
+      jdbc-url: jdbc:sqlserver://127.0.0.1:1433;DatabaseName=UFDATA_001_2015
+      username: sa
+      password: 12345678
+  #      password: Aa123456
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy=org:
+          hibernate:
+            boot:
+              model:
+                naming:
+                  PhysicalNamingStrategyStandardImpl
+mybatis-plus:
+  type-aliases-package: com.mt.pojo.*
+  mapper-locations: classpath:/mybatis/mappers/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+logging:
+  level:
+    com.system.mapper: debug
