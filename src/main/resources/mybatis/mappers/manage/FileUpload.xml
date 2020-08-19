@@ -11,8 +11,10 @@
     </resultMap>
 
     <insert id="insert">
-        insert into cy_manage_files (fd_id, fd_subject_id, fd_file_name, fd_time, fd_url, fd_creat_person,suppliername,suppliercode,supplierid)
-        VALUES (#{fd_id}, #{fd_subject_id}, #{fd_file_name}, #{fd_time}, #{fd_url}, #{fd_creat_person},#{suppliername},#{suppliercode},#{supplierid})
+        insert into cy_manage_files (fd_id, fd_subject_id, fd_file_name, fd_time, fd_url, fd_creat_person, suppliername,
+                                     suppliercode, supplierid)
+        VALUES (#{fd_id}, #{fd_subject_id}, #{fd_file_name}, #{fd_time}, #{fd_url}, #{fd_creat_person}, #{suppliername},
+                #{suppliercode}, #{supplierid})
     </insert>
 
     <select id="select1" resultMap="BaseResultMap">
@@ -69,4 +71,8 @@
                       on fi.fd_id = down.fd_fileid) E
         group by fd_fileid
     </select>
+
+    <delete id="">
+
+    </delete>
 </mapper>

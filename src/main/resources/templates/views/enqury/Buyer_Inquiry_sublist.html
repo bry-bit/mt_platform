@@ -95,7 +95,8 @@
             , tablePlug = layui.tablePlug //表格插件
             , testTablePlug = layui.testTablePlug // 测试js模块
             , renderFormSelectsIn = layui.renderFormSelectsIn // 针对form在特定场合下的渲染的封装
-            , formSelects = layui.formSelects;
+            , formSelects = layui.formSelects
+            , indexs = '';
 
         table.render({
             elem: '#demo'
@@ -190,6 +191,52 @@
                     }
                 });
             }
+        });
+
+        $('#release').on('click', function () {
+            let checkStatus = table.checkStatus('demo')
+                , data = checkStatus.data;
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].suppliername != undefined) {
+                    continue;
+                } else {
+                    return layer.alert('"' + data[i].fd_inventory_name + '('
+                        + data[i].fd_inventory_no + ')"的供应商未进行选择');
+                }
+            }
+
+            $.ajax({
+                type: 'post'
+                , url: '/Generating_Quotation?table=sublist&name=闫宝'
+                // + parent.layui.index.getCookie("Login_Name")
+                , data: JSON.stringify(data)
+                , dataType: 'json'
+                , async: false
+                , contentType: 'application/json; charset=utf-8'
+                , beforeSend: function () {
+                    indexs = layer.load(1);
+                }
+                , success: function (res) {
+                    if (res.code == "0") {
+                        layer.msg('发布成功！', {
+                            offset: '15px'
+                            , icon: 1
+                            , time: 1000
+                        }, function () {
+                            layer.close(indexs);
+                            location.reload();
+                        });
+                    } else {
+                        layer.msg('发布失败！', {
+                            offset: '15px'
+                            , icon: 2
+                            , time: 1000
+                        }, function () {
+                            layer.close(indexs);
+                        });
+                    }
+                }
+            })
         });
     });
 </script>

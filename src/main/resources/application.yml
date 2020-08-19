@@ -17,30 +17,22 @@ spring:     #定义springmvc视图解析器
           paths: /**
   datasource:
     test1:
-      type: com.alibaba.druid.pool.DruidDataSource
+#      type: com.alibaba.druid.pool.DruidDataSource
       driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-      #        jdbc-url: jdbc:sqlserver://117.50.54.210:1433;DatabaseName=MTsupplier
+#              jdbc-url: jdbc:sqlserver://117.50.54.210:1433;DatabaseName=MTsupplier
       jdbc-url: jdbc:sqlserver://127.0.0.1:1433;DatabaseName=MTsupplier
       username: sa
       password: 12345678
-    #      password: Aa123456
+#          password: Aa123456
     test2:
-      type: com.alibaba.druid.pool.DruidDataSource
+#      type: com.alibaba.druid.pool.DruidDataSource
       driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-      #        jdbc-url: jdbc:sqlserver://117.50.54.210:1433;DatabaseName=UFDATA_001_2015
+#              jdbc-url: jdbc:sqlserver://117.50.54.210:1433;DatabaseName=UFDATA_001_2015
       jdbc-url: jdbc:sqlserver://127.0.0.1:1433;DatabaseName=UFDATA_001_2015
       username: sa
       password: 12345678
-  #      password: Aa123456
-  jpa:
-    hibernate:
-      naming:
-        physical-strategy=org:
-          hibernate:
-            boot:
-              model:
-                naming:
-                  PhysicalNamingStrategyStandardImpl
+#        password: Aa123456
+
 mybatis-plus:
   type-aliases-package: com.mt.pojo.*
   mapper-locations: classpath:/mybatis/**/**/*.xml

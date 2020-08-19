@@ -16,8 +16,11 @@
                                                      count(s.suppliername) sum
                                 from cy_supplier s
                                 GROUP BY s.ID) cs on c.fd_no = cs.ID
-        where Person.cPersonName = #{cPersonName}
-          and c.fd_status is null
+                where Person.cPersonName = #{cPersonName}
+                  and c.fd_status is null
+        <if test="fd_id != null and fd_id != ''">
+            and c.fd_id = #{fd_id}
+        </if>
     </select>
 
     <!--根据询价单主表ID更新标准流程询价单主表数据-->

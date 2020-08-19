@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface Pur_EnquiryMapper {
     //获取U8请购单到询价表中，并展现相应的供应商数据
-    List<cy_inquiry> Main_sheet(String cPersonName);
+    List<cy_inquiry> Main_sheet(@Param("cPersonName") String cPersonName, @Param("fd_id") String fd_id);
 
     //查询当天最大的编号尾数
     String max_orderno();

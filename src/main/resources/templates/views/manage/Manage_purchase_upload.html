@@ -50,8 +50,7 @@
         // }
         table.render({
             elem: '#demo'
-            , url: '/tt?ID=4586'
-            // + parent.layui.index.getCookie("Login_ID")
+            , url: '/tt?ID=' + parent.layui.index.getCookie("Login_ID")
             , page: true
             , limit: 30
             , limits: [30, 50, 100]
@@ -114,6 +113,7 @@
                 }
             });
         });
+
 
 
     });

@@ -7,13 +7,70 @@
 <body>
 <div class="layui-card">
     <div class="layui-card-body">
-        <button type="button" class="layui-btn" id="fileN">
-            <i class="layui-icon" style="font-size: 30px;">&#xe601;</i>下载文件
-        </button>
-        <hr>
+        <!--        <button type="button" class="layui-btn" id="fileN">-->
+        <!--            <i class="layui-icon" style="font-size: 30px;">&#xe601;</i>下载文件-->
+        <!--        </button>-->
+        <!--        <hr>-->
         <table class="layui-hide" id="demo" lay-filter="demo"></table>
     </div>
 </div>
 
+<script src="collection/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: 'collection/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'table', 'upload'], function () {
+        var $ = layui.$
+            , layer = layui.layer
+            , indexs = ''
+            , table = layui.table
+            , upload = layui.upload;
+
+        table.render({
+            elem: '#demo'
+            , url: '/tt?ID=' + parent.layui.index.getCookie("Login_ID")
+            // , page: true
+            // , limit: 30
+            // , limits: [30, 50, 100]
+            , height: 'full-55'
+            , cols: [
+                [
+                    {type: 'numbers'}
+                    , {field: 'fd_file_name', title: '文件名称', align: "center"}
+                    , {field: 'fd_time', title: '上传时间', align: "center"}
+                    , {field: 'fd_creat_person', title: '上传人', align: "center"}
+                    , {
+                    field: '', title: '下载', align: "center", templet: function (row) {
+                        return '<button type="button" class="layui-btn" id="fileN">' +
+                            '            <i class="layui-icon" style="font-size: 30px;">&#xe601;</i>下载文件' +
+                            '<input type="text" value="' + row.fd_id + '" style="display: none" id="data">' +
+                            '        </button>';
+                    }
+                }
+                    , {
+                    field: '', title: '操作', align: "center", templet: function () {
+                        return '<a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="File_delete"><i class="layui-icon">&#xe640;</i>删除</a>';
+                    }
+                }
+                ]
+            ]
+        });
+
+
+        $('#fileN').on('click', function () {
+            $.ajax({
+                type: 'post'
+                , url: '/downloadFile?userid=' + parent.layui.index.getCookie("Login_ID") + '&fileid=' +$('#data').val()
+                , async: false
+                , contentType: 'application/json; charset=utf-8'
+                , success: function (res) {
+                    layer.alert(res);
+                }
+            })
+        });
+    });
+</script>
 </body>
 </html>

@@ -40,7 +40,7 @@ public class Pur_Enquiry {
     @ResponseBody
     public String InquirySheet(String fd_applicant) {
         try {
-            List<cy_inquiry> inquiryList = mapper.Main_sheet(fd_applicant);
+            List<cy_inquiry> inquiryList = mapper.Main_sheet(fd_applicant, null);
 
             return JSONUtil.toJson("0", inquiryList, "获取成功！", "");
         } catch (Exception e) {
@@ -103,7 +103,7 @@ public class Pur_Enquiry {
 
     @RequestMapping("Generating_Quotation")
     @ResponseBody
-    public String Generating_Quotation(@RequestBody String data, String table) {
+    public String Generating_Quotation(@RequestBody String data, String table, String name) {
         try {
             System.out.println(data);
 
@@ -165,7 +165,34 @@ public class Pur_Enquiry {
                     mapper.Main_inquiry(cyInquiry);
                 }
             } else {
+                //传子表数据
+                List<cy_inquiry_detailed> cyInquiryDetailedList = JSONObject.parseArray(data, cy_inquiry_detailed.class);
+                //查询主表数据
+                List<cy_inquiry> cyInquiryList = mapper.Main_sheet(name, cyInquiryDetailedList.get(0).getFd_parent_id());
+                for (int i = 0; i < cyInquiryList.size(); i++) {
+                    cy_order cyOrder = new cy_order();
+                    cyOrder.setFd_id(IDUtil.getUUID());
+                    cyOrder.setFd_no(randomUtil.getNewAutoNum());
+                    cyOrder.setFd_applicant(cyInquiryList.get(i).getCPersonName());
+                    cyOrder.setFd_creat_person(cyInquiryList.get(i).getCPersonName());
+                    cyOrder.setFd_creat_time(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+                    cyOrder.setFd_apply_no(cyInquiryList.get(i).getFd_apply_no());
+                    cyOrder.setFd_apply_time(cyInquiryList.get(i).getFd_apply_time());
+                    cyOrder.setFd_apply_department(cyInquiryList.get(i).getCDepName());
+                    cyOrder.setFd_apply_bustype(cyInquiryList.get(i).getFd_apply_bustype());
+                    cyOrder.setFd_apply_purtype(cyInquiryList.get(i).getFd_apply_purtype());
+                    cyOrder.setFd_purchase_avaqty(cyInquiryList.get(i).getFd_purchase_avaqty());
+                    cyOrder.setFd_inquiryid(cyInquiryList.get(i).getFd_id());
 
+                    for (int j = 0; j < cyInquiryDetailedList.size(); j++) {
+                        //循环已选择的供应商
+                        List<cy_supplier> cySuppliers = supMapper.select_supp(
+                                cyInquiryList.get(i).getFd_id(), null, null);
+
+
+                    }
+
+                }
             }
 
 

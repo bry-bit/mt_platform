@@ -33,8 +33,7 @@
         //生成主题列表
         table.render({
             elem: '#demo'
-            , url: '/ListOfTopics?fd_creat_person=包荣岩'
-            // + parent.layui.index.getCookie("Login_Name")
+            , url: '/ListOfTopics?fd_creat_person=' + parent.layui.index.getCookie("Login_Name")
             , page: true
             , limit: 30
             , limits: [30, 50, 100]
@@ -63,7 +62,7 @@
             let data = obj.data;
             let topLayui = parent === self ? layui : top.layui;
             //跳转到上传（下载）列表
-            topLayui.index.openTabsPage("/page?url=/manage/", data.fd_subject);
+            topLayui.index.openTabsPage("/page?url=/manage/Manage_download_details.html", data.fd_subject);
 
             //从一个html页面传值到另一个html页面
             window.localStorage.setItem('fd_id', data.fd_id);//主题ID

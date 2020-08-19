@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mt.mapper.authorization.Person_SettingMapper">
+    <select id="Person_List" resultType="com.mt.pojo.permission.cy_user">
+        select *
+        from MTsupplier.dbo.cy_user
+        where limits_type != '5'
+    </select>
+</mapper>

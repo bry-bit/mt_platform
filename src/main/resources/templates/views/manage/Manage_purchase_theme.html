@@ -54,8 +54,7 @@
         //生成主题列表
         table.render({
             elem: '#demo'
-            , url: '/ListOfTopics?fd_creat_person=包荣岩'
-            // + parent.layui.index.getCookie("Login_Name")
+            , url: '/ListOfTopics?fd_creat_person=' + parent.layui.index.getCookie("Login_Name")
             , page: true
             , limit: 30
             , limits: [30, 50, 100]
@@ -104,7 +103,8 @@
                 '<div class="layui-form-item">' +
                 '    <label class="layui-form-label">创建人</label>' +
                 '    <div class="layui-input-inline">' +
-                '      <input type="text" name="creator" id="creator" autocomplete="off" class="layui-input" value="包荣岩" disabled>' +
+                '      <input type="text" name="creator" id="creator" autocomplete="off" class="layui-input" value="'
+                + parent.layui.index.getCookie("Login_Name") + '" disabled>' +
                 '    </div>' +
                 ' </div></form>', function (index) {
                 //获取创建主题的数据
