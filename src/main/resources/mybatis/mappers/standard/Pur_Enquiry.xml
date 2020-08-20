@@ -112,11 +112,11 @@
 
     <!--插入报价单子表数据-->
     <insert id="Person_order" parameterType="com.mt.pojo.standard.cy_order_detailed">
-        insert into cy_order_detailed (fd_id, fd_parent_id, fd_inquiry_ids, fd_inventory_name, fd_inventory_no,
+        insert into cy_order_detailed (fd_id, fd_parent_id, fd_inquiry_ids, fd_order_person,fd_inventory_name, fd_inventory_no,
                                        fd_model, fd_unit, fd_purchase_avaqty, fd_tax,
                                        fd_ship_addr, fd_arrival_house, fd_bid_opentime, fd_bid_closetime,
                                        fd_supplier_name, fd_supplier_code)
-        values (#{fd_id}, #{fd_parent_id}, #{fd_inquiry_ids}, #{fd_inventory_name}, #{fd_inventory_no},
+        values (#{fd_id}, #{fd_parent_id}, #{fd_inquiry_ids},#{fd_order_person}, #{fd_inventory_name}, #{fd_inventory_no},
                 #{fd_model},
                 #{fd_unit}, #{fd_purchase_avaqty}, #{fd_tax},
                 #{fd_ship_addr}, #{fd_arrival_house}, #{fd_bid_opentime}, #{fd_bid_closetime}, #{fd_supplier_name},

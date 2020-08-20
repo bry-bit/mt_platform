@@ -14,10 +14,8 @@ public class cy_inquiry_detailed {
     private String fd_id;
     //关联主表ID
     private String fd_parent_id;
-    //U8请购单子表ID
-    private String fd_detailsid;
-    //U8请购单主表ID
-    private String fd_inquiryid;
+    //采购员
+    private String fd_order_person;
     //存货名称
     private String fd_inventory_name;
     //存货编号

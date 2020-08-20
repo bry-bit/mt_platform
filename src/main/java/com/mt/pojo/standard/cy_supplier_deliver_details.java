@@ -14,6 +14,7 @@ public class cy_supplier_deliver_details {
     private String fd_id;//ID
     private String fd_parent_id;//关联主表ID
     private String fd_order_ids;//报价单子表id
+    private String fd_order_person;//采购员
     private String fd_inventory_no;//存货编号
     private String fd_inventory_name;//存货名称
     private String fd_model;//规格型号

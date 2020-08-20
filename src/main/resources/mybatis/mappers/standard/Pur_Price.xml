@@ -93,6 +93,7 @@
         insert into cy_supplier_deliver_details ( fd_id
         ,fd_parent_id
         ,fd_order_ids
+        ,fd_order_person
         ,fd_inventory_no
         ,fd_inventory_name
         ,fd_model
@@ -103,6 +104,7 @@
         ,fd_arrival_house) values(#{fd_id}
         ,#{fd_parent_id}
         ,#{fd_order_ids}
+        ,#{fd_order_person}
         ,#{fd_inventory_no}
         ,#{fd_inventory_name}
         ,#{fd_model}
