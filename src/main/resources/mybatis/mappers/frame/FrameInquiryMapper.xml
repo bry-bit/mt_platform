@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.mt.mapper.frame.FrameInquiryMapper">
+
+    <!--生成框架类询价单主表-->
     <insert id="excel1">
         insert into cy_kinquiry (fd_id, fd_creat_person, fd_creat_time, fd_filename, fd_url)
         values (#{fd_id}, #{fd_creat_person}, #{fd_creat_time}, #{fd_filename}, #{fd_url})
     </insert>
+
+    <!--生成框架类询价单子表-->
     <insert id="excel2">
         insert into cy_kinquiry_details ( fd_id, fd_parent_id, fd_order, fd_inventory_name, fd_inventory_no, fd_brand
                                         , fd_model, fd_parameter, fd_unit, fd_price, fd_cycle, fd_methods
@@ -13,4 +17,39 @@
                , #{fd_parameter}, #{fd_unit}, #{fd_price}, #{fd_cycle}, #{fd_methods}
                , #{fd_technical_para}, #{fd_validity}, #{fd_remarks})
     </insert>
+
+    <!--更新框架类询价单主表数据-->
+    <update id="update_inquiry">
+        update cy_kinquiry set fd_modificatio_person=#{fd_modificatio_person},fd_modificatio_time=getdate(),fd_status=#{fd_status}
+        where fd_id=#{fd_id}
+    </update>
+
+    <!--更新框架类询价单子表数据-->
+    <update id="update_inqde">
+        update cy_kinquiry_details set
+              fd_bid_opentime=#{fd_bid_opentime},
+              fd_bid_closetime = #{fd_bid_closetime},
+              fd_supplier_name =#{fd_supplier_name},
+              fd_supplier_code =#{fd_supplier_code},
+              fd_status = #{fd_status}
+        where fd_id = #{fd_id}
+    </update>
+
+    <!--根据人员id权限查询数据-->
+    <select id="select_inq" parameterType="String" resultType="com.mt.pojo.frame.cy_kinquiry">
+        select * from cy_kinquiry where fd_creat_person = #{fd_creat_person}
+    </select>
+
+    <!--根据主表ID查询框架类询价单子表数据-->
+    <select id="select_inqde" parameterType="String" resultType="com.mt.pojo.frame.cy_kinquiry_details">
+        select * from cy_kinquiry_details where 1=1
+            and fd_parent_id = #{fd_parent_id}
+    </select>
+
+    <!--############################################报价SQL#############################################-->
+
+
+
+
+
 </mapper>

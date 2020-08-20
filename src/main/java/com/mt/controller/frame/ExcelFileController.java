@@ -27,13 +27,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 @Controller
 public class ExcelFileController {
     @Resource
     private FrameInquiryMapper frameInquiryMapper;
     JSONUtil jsonUtil = new JSONUtil();
-
 
     /**
      * @param file 文件

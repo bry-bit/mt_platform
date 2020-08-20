@@ -17,8 +17,6 @@ public class cy_koffer {
     private String fd_applicant;//询价单制单人
     private String fd_creat_person;//创建人
     private String fd_creat_time;//创建时间
-    private String fd_modificatio_person;//修改人
-    private String fd_modificatio_time;//修改时间
     private String fd_suptype;//供应类型
     private String fd_remarks;//备注
     private String fd_quotation_tatus;//报价状态

@@ -89,8 +89,7 @@
     <!--更新报价单主表数据-->
     <update id="order_update" parameterType="com.mt.pojo.standard.cy_order">
         update cy_order
-        set fd_modificatio_person=#{fd_modificatio_person},
-            fd_modificatio_time=getdate(),
+        set
             fd_quotation_tatus=#{fd_quotation_tatus},
             fd_remarks=#{fd_remarks}
         where fd_id = #{fd_id}
@@ -134,7 +133,9 @@
             fd_return=#{fd_return},
             fd_return_reason=#{fd_return_reason},
             fd_remarks=#{fd_remarks},
-            fd_quotation_tatus=#{fd_quotation_tatus}
+            fd_quotation_tatus=#{fd_quotation_tatus},
+            fd_modificatio_person=#{fd_modificatio_person},
+            fd_modificatio_time=getdate()
         where fd_id = #{fd_id}
     </update>
 

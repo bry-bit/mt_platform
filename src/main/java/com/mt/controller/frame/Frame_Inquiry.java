@@ -1,4 +1,4 @@
-package com.mt.controller.standard.enqury;
+package com.mt.controller.frame;
 
 import com.alibaba.fastjson.JSONObject;
 import com.mt.mapper.standard.Pur_EnquiryMapper;
@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 @Controller
-public class Pur_Enquiry {
+public class Frame_Inquiry {
     @Autowired
     private Pur_EnquiryMapper mapper;
     @Autowired
@@ -99,6 +99,7 @@ public class Pur_Enquiry {
             return JSONUtil.toJson("1", "", "获取失败！", "");
         }
     }
+
 
     @RequestMapping("Generating_Quotation")
     @ResponseBody
@@ -201,5 +202,4 @@ public class Pur_Enquiry {
             return JSONUtil.toJson("1", "", "生成报价单失败！", "");
         }
     }
-
 }
