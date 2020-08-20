@@ -77,13 +77,12 @@
             upload.render({
                 elem: '#fileN'
                 , url: '/upload?subjectid=' + window.localStorage.getItem('fd_id')
-                    + '&ID=4586'
-                // + parent.layui.index.getCookie("Login_ID")
+                    + '&ID=' + parent.layui.index.getCookie("Login_ID")
                 , accept: 'file' //普通文件
                 , multiple: true
                 , auto: true
                 , choose: function (obj) {
-                    uploadFilesCount = obj.upload.length-1;
+                    uploadFilesCount = obj.upload.length - 1;
                     fileCount = 0;
                 }
                 , before: function () {
@@ -98,6 +97,7 @@
                             , icon: 1
                             , time: 1000
                         }, function () {
+                            layer.close(indexs);
                             location.reload(index);
                         });
                     }
@@ -113,7 +113,6 @@
                 }
             });
         });
-
 
 
     });

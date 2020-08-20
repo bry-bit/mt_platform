@@ -12,6 +12,8 @@ import lombok.experimental.Accessors;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class cy_historical_price {
     private String fd_id;//ID
+    private String fd_orderid;//供应商平台报价单子表ID
+    private String fd_u8id;// U8中采购订单子表ID
     private String fd_offer_date;//报价日期
     private String fd_supplier_name;//供应商名称
     private String fd_supplier_code;//供应商编码

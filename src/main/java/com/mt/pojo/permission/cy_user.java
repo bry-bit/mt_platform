@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 /**
- * 用户表
+ * 活动式菜单
  */
 @Data
 @Accessors(chain = true)

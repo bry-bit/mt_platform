@@ -207,8 +207,7 @@
 
             $.ajax({
                 type: 'post'
-                , url: '/Generating_Quotation?table=sublist&name=闫宝'
-                // + parent.layui.index.getCookie("Login_Name")
+                , url: '/Generating_Quotation?table=sublist&name=' + parent.layui.index.getCookie("Login_Name")
                 , data: JSON.stringify(data)
                 , dataType: 'json'
                 , async: false

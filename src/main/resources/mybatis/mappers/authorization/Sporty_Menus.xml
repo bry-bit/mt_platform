@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mt.mapper.authorization.Sporty_MenusMapper">
+    <!-- 菜单生成 -->
+    <select id="Menu_List" resultType="com.mt.pojo.authorization.cy_menu">
+        select ID as id, fd_menu_name as name, fd_parent_id as parentId, fd_menu_url as url
+        from MTsupplier.dbo.cy_menu
+    </select>
+</mapper>
