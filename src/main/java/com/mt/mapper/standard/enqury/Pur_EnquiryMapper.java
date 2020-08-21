@@ -1,4 +1,4 @@
-package com.mt.mapper.standard;
+package com.mt.mapper.standard.enqury;
 
 import com.mt.pojo.standard.cy_inquiry;
 import com.mt.pojo.standard.cy_inquiry_detailed;
@@ -24,7 +24,7 @@ public interface Pur_EnquiryMapper {
     void Main_inquiry(cy_inquiry inquiry);
 
     //根据询价单子表ID更新标准流程询价单子表数据
-    void Person_inquiry(cy_inquiry inquiry);
+    void Person_inquiry(cy_inquiry_detailed cyInquiryDetailed);
 
     //根据询价单主表ID查询询价单子表数据
     List<cy_inquiry_detailed> Person_inqdata(String fd_parent_id);

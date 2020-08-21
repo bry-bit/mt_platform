@@ -141,7 +141,7 @@ public class FileUploadController {
     @RequestMapping("/downloadFile")
     @ResponseBody
     private String downloadFile(HttpServletRequest request, HttpServletResponse response, String userid, String fileid) throws Exception {
-
+        System.out.println("userid:" + userid + ",fileid:" + fileid);
         if (userid == null) {
             userid = "测试人员";
         }

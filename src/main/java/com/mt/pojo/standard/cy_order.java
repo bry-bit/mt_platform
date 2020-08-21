@@ -34,4 +34,5 @@ public class cy_order {
     private String fd_add3;//备用字段
     private String fd_add4;//备用字段
     private String fd_inquiryid;//询价单ID
+    private String fd_modificatio_person;
 }

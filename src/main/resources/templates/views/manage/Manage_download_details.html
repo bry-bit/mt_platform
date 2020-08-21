@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="collection/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="collection/layuiadmin/style/admin.css" media="all">
 </head>
 <body>
 <div class="layui-card">
@@ -30,7 +36,7 @@
 
         table.render({
             elem: '#demo'
-            , url: '/tt?ID=' + parent.layui.index.getCookie("Login_ID")
+            , url: '/tt?ID=' + window.localStorage.getItem('fd_id')
             // , page: true
             // , limit: 30
             // , limits: [30, 50, 100]
@@ -43,10 +49,10 @@
                     , {field: 'fd_creat_person', title: '上传人', align: "center"}
                     , {
                     field: '', title: '下载', align: "center", templet: function (row) {
-                        return '<button type="button" class="layui-btn" id="fileN">' +
+                        return '<a type="button" class="layui-btn" id="fileN">' +
                             '            <i class="layui-icon" style="font-size: 30px;">&#xe601;</i>下载文件' +
                             '<input type="text" value="' + row.fd_id + '" style="display: none" id="data">' +
-                            '        </button>';
+                            '        </a>';
                     }
                 }
                 ]
@@ -57,10 +63,10 @@
         $('#fileN').on('click', function () {
             $.ajax({
                 type: 'post'
-                , url: '/downloadFile?userid=' + parent.layui.index.getCookie("Login_ID") + '&fileid=' +$('#data').val()
-                , async: false
-                , contentType: 'application/json; charset=utf-8'
-                , success: function (res) {
+                ,url: '/downloadFile?userid=' + parent.layui.index.getCookie("Login_ID") + '&fileid=' + $('#data').val()
+                ,async: false
+                ,contentType: 'application/json; charset=utf-8'
+                ,success: function (res) {
                     layer.alert(res);
                 }
             })

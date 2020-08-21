@@ -1,4 +1,4 @@
-package com.mt.mapper.standard;
+package com.mt.mapper.standard.enqury;
 
 import com.mt.pojo.standard.cy_supplier;
 import org.apache.ibatis.annotations.Param;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.mt.mapper.standard.Pur_SelectSupMapper">
+<mapper namespace="com.mt.mapper.standard.enqury.Pur_SelectSupMapper">
     <!-- 查询U8供应商档案表 -->
     <select id="Chose_sup" resultType="com.mt.pojo.standard.cy_supplier">
         select cVenCode as suppliercode, cVenName as suppliername

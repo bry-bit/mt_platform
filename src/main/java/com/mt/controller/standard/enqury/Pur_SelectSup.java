@@ -1,7 +1,7 @@
 package com.mt.controller.standard.enqury;
 
 import com.alibaba.fastjson.JSONObject;
-import com.mt.mapper.standard.Pur_SelectSupMapper;
+import com.mt.mapper.standard.enqury.Pur_SelectSupMapper;
 import com.mt.pojo.standard.cy_inquiry;
 import com.mt.pojo.standard.cy_inquiry_detailed;
 import com.mt.pojo.standard.cy_supplier;

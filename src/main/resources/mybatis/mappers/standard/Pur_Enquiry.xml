@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.mt.mapper.standard.Pur_EnquiryMapper">
+<mapper namespace="com.mt.mapper.standard.enqury.Pur_EnquiryMapper">
     <!-- 获取U8请购单到询价表中，并展现相应的供应商数据 -->
     <select id="Main_sheet" resultType="com.mt.pojo.standard.cy_inquiry">
         select c.*, Person.cPersonName, cs.suppliername, cs.sum, Department.cDepName, PurchaseType.cPTName
@@ -53,7 +53,7 @@
     <select id="Person_inqdata" parameterType="String" resultType="com.mt.pojo.standard.cy_inquiry_detailed">
         select c.*, cs.suppliername, cs.sum, ci.fd_edit
         from cy_inquiry_detailed c
-                     left join cy_inquiry ci on c.fd_id = ci.fd_id
+                     left join cy_inquiry ci on c.fd_parent_id = ci.fd_id
                      left join (select               s.ID,
                                         suppliername=(stuff((SELECT ',' + suppliername
                                                              FROM cy_supplier
@@ -89,7 +89,8 @@
     <!--更新报价单主表数据-->
     <update id="order_update" parameterType="com.mt.pojo.standard.cy_order">
         update cy_order
-        set
+        set fd_modificatio_person=#{fd_modificatio_person},
+            fd_modificatio_time=getdate(),
             fd_quotation_tatus=#{fd_quotation_tatus},
             fd_remarks=#{fd_remarks}
         where fd_id = #{fd_id}
@@ -133,9 +134,7 @@
             fd_return=#{fd_return},
             fd_return_reason=#{fd_return_reason},
             fd_remarks=#{fd_remarks},
-            fd_quotation_tatus=#{fd_quotation_tatus},
-            fd_modificatio_person=#{fd_modificatio_person},
-            fd_modificatio_time=getdate()
+            fd_quotation_tatus=#{fd_quotation_tatus}
         where fd_id = #{fd_id}
     </update>
 

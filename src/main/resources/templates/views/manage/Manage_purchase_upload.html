@@ -50,7 +50,7 @@
         // }
         table.render({
             elem: '#demo'
-            , url: '/tt?ID=' + parent.layui.index.getCookie("Login_ID")
+            , url: '/tt?ID=' + window.localStorage.getItem('fd_id')
             , page: true
             , limit: 30
             , limits: [30, 50, 100]

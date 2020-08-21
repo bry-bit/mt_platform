@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mt.mapper.standard.offer.Pur_OrderMapper">
+    <!--查询报价单主表数据-->
+    <select id="Select_order" resultType="com.mt.pojo.standard.cy_order">
+        <if test="fd_applicant != null and fd_applicant != ''">
+            select *
+            from cy_order
+            where fd_quotation_tatus is null
+              and fd_applicant = #{fd_applicant}
+            order by fd_no desc
+        </if>
+        <if test="fd_supplier_name != null and fd_supplier_name != ''">
+            select distinct o.*
+            from cy_order o
+                         left join MTsupplier.dbo.cy_order_detailed d on o.fd_id = d.fd_parent_id
+                    where 1 = 1
+                      and o.fd_quotation_tatus is null
+            <if test="fd_supplier_name != null and fd_supplier_name != ''">
+                and  #{fd_supplier_name} in
+                     (select distinct d.fd_supplier_name
+                      from MTsupplier.dbo.cy_order_detailed
+                      where d.fd_parent_id = o.fd_id)
+            </if>
+            union all
+            select distinct *
+            from cy_order
+                    where 1 = 1
+                      and fd_quotation_tatus is null
+            <if test="fd_applicant != null and fd_applicant != ''">
+                and fd_applicant = #{fd_applicant}
+            </if>
+            <if test="fd_supplier_name != null and fd_supplier_name != ''">
+                and fd_supplier_name = #{fd_supplier_name}
+            </if>
+            order by fd_no desc
+        </if>
+    </select>
+
+    <!--根据报价单主表ID查询报价单子表数据-->
+    <select id="Select_orderson" resultType="com.mt.pojo.standard.cy_order_detailed">
+        select cy_order_detailed.*, ComputationUnit.cComUnitName
+        from cy_order_detailed
+                     left join [UFDATA_001_2015].[dbo].ComputationUnit
+                on cy_order_detailed.fd_unit = ComputationUnit.cComunitCode
+        where fd_parent_id = #{fd_parent_id}
+    </select>
+
+    <!-- 根据报价单子表ID更新数据-->
+    <update id="order_sonUpdate" parameterType="com.mt.pojo.standard.cy_order_detailed">
+        update cy_order_detailed
+        set fd_offer=#{fd_offer},
+            fd_offer_time=#{fd_offer_time},
+            fd_qualified=#{fd_qualified},
+            fd_attachment=#{fd_attachment},
+            fd_return=#{fd_return},
+            fd_return_reason=#{fd_return_reason},
+            fd_remarks=#{fd_remarks},
+            fd_quotation_tatus=#{fd_quotation_tatus},
+            fd_add1=#{fd_add1}
+        where fd_id = #{fd_id}
+    </update>
+</mapper>

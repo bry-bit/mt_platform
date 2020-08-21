@@ -57,8 +57,8 @@ public class User_Registration {
                 //创建人为创建的用户
                 cyUser.setFd_applicant(cyUser.getFd_user_name());
                 //权限状态：“1”超级管理员；“2”管理员；“3”采购员；“4”技术员；“5”供应商
-                cyUser.setLimits_type("5");
-                cyUser.setLimits_state("供应商");
+                cyUser.setLimits_type("供应商");
+                cyUser.setLimits_state("5");
                 //是否禁用：“Y”禁用；“N”不禁用
                 cyUser.setFd_is_avaible("N");
                 mapper.insert(cyUser);

@@ -1,8 +1,8 @@
 package com.mt.controller.standard.enqury;
 
 import com.alibaba.fastjson.JSONObject;
-import com.mt.mapper.standard.Pur_EnquiryMapper;
-import com.mt.mapper.standard.Pur_SelectSupMapper;
+import com.mt.mapper.standard.enqury.Pur_EnquiryMapper;
+import com.mt.mapper.standard.enqury.Pur_SelectSupMapper;
 import com.mt.pojo.standard.*;
 import com.mt.util.IDUtil;
 import com.mt.util.JSONUtil;
@@ -93,6 +93,7 @@ public class Pur_Enquiry {
         try {
             System.out.println("fd_parent_id:" + fd_parent_id);
             List<cy_inquiry_detailed> list = mapper.Person_inqdata(fd_parent_id);
+            System.out.println("list:" + list);
             return JSONUtil.toJson("0", list, "获取成功！", "");
         } catch (Exception e) {
             e.printStackTrace();
@@ -183,17 +184,42 @@ public class Pur_Enquiry {
                     cyOrder.setFd_purchase_avaqty(cyInquiryList.get(i).getFd_purchase_avaqty());
                     cyOrder.setFd_inquiryid(cyInquiryList.get(i).getFd_id());
 
+                    //报价主表插入
+                    mapper.Main_order(cyOrder);
+
                     for (int j = 0; j < cyInquiryDetailedList.size(); j++) {
+                        String uuid1 = IDUtil.getUUID();
+                        cy_order_detailed cyOrderDetailed = new cy_order_detailed();
                         //循环已选择的供应商
                         List<cy_supplier> cySuppliers = supMapper.select_supp(
                                 cyInquiryList.get(i).getFd_id(), null, null);
+                        for (int k = 0; k < cySuppliers.size(); k++) {
+                            cyOrderDetailed.setFd_id(uuid1);
+                            cyOrderDetailed.setFd_parent_id(cyOrder.getFd_id());
+                            cyOrderDetailed.setFd_inquiry_ids(cyInquiryDetailedList.get(j).getFd_id());
+                            cyOrderDetailed.setFd_inventory_name(cyInquiryDetailedList.get(j).getFd_inventory_name());
+                            cyOrderDetailed.setFd_inventory_no(cyInquiryDetailedList.get(j).getFd_inventory_no());
+                            cyOrderDetailed.setFd_model(cyInquiryDetailedList.get(j).getFd_model());
+                            cyOrderDetailed.setFd_unit(cyInquiryDetailedList.get(j).getFd_unit());
+                            cyOrderDetailed.setFd_purchase_avaqty(cyInquiryDetailedList.get(j).getFd_purchase_avaqty());
+                            cyOrderDetailed.setFd_tax(cyInquiryDetailedList.get(j).getFd_tax());
+                            cyOrderDetailed.setFd_supplier_name(cySuppliers.get(k).getSuppliername());
+                            cyOrderDetailed.setFd_supplier_code(cySuppliers.get(k).getSuppliercode());
+                            cyOrderDetailed.setFd_bid_opentime(cySuppliers.get(k).getStartdate());
+                            cyOrderDetailed.setFd_bid_closetime(cySuppliers.get(k).getEnddate());
 
+                            //报价子表插入
+                            mapper.Person_order(cyOrderDetailed);
+                        }
 
+                        //修改子表发布状态值
+                        cy_inquiry_detailed detailed = JSONObject.parseObject(
+                                JSONObject.toJSONString(cyInquiryDetailedList.get(j)), cy_inquiry_detailed.class);
+                        detailed.setFd_status("1");
+                        mapper.Person_inquiry(detailed);
                     }
-
                 }
             }
-
 
             return JSONUtil.toJson("0", "", "生成报价单成功！", "");
         } catch (Exception e) {

@@ -33,7 +33,7 @@
     <select id="SelectTableController" parameterType="String" resultMap="BaseResultMap">
         select fd_file_name, fd_time, fd_creat_person
         from cy_manage_files
-        where fd_creat_person = #{ID}
+        where fd_subject_id = #{ID}
     </select>
 
 
@@ -73,6 +73,5 @@
     </select>
 
     <delete id="">
-
     </delete>
 </mapper>

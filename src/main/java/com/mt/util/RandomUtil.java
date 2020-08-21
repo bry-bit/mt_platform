@@ -1,6 +1,6 @@
 package com.mt.util;
 
-import com.mt.mapper.standard.Pur_EnquiryMapper;
+import com.mt.mapper.standard.enqury.Pur_EnquiryMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
