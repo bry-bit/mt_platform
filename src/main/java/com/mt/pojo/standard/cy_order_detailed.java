@@ -44,5 +44,5 @@ public class cy_order_detailed {
     private String fd_modificatio_time;//修改时间
     private String fd_add1;//备用字段
     private String fd_add2;//备用字段
-
+    private String cComUnitName;
 }

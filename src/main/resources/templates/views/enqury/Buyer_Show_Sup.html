@@ -80,15 +80,17 @@
                     , {field: 'suppliercode', title: '供应商编码', align: "center"}
                     , {field: 'suppliername', title: '供应商名称', align: "center"}
                     , {
-                    field: 'startdate', title: '开标日期', align: "center", edit: 'text', event: 'date'
-                    , templet: function (row) {
-                        return (new Date(row.startdate)).pattern("yyyy-MM-dd");
+                    field: 'startdate', title: '开标日期', align: "center", templet: function (row) {
+                        return '<input type="text" class="layui-input layui-input-date date1" value="'
+                            + (new Date(row.startdate)).pattern("yyyy-MM-dd") + '" ' +
+                            'style="border: none;font-size: 13px;padding-bottom: 5px">';
                     }
                 }
                     , {
-                    field: 'enddate', title: '结标日期', align: "center", edit: 'text', event: 'date2'
-                    , templet: function (row) {
-                        return (new Date(row.enddate)).pattern("yyyy-MM-dd");
+                    field: 'enddate', title: '结标日期', align: "center", templet: function (row) {
+                        return '<input type="text" class="layui-input layui-input-date date2" value="'
+                            + (new Date(row.enddate)).pattern("yyyy-MM-dd") + '" ' +
+                            'style="border: none;font-size: 13px;padding-bottom: 5px">';
                     }
                 }
                     , {
@@ -99,40 +101,22 @@
                 }
                 ]
             ]
+            , done: function () {
+                lay('.layui-input-date').each(function () {
+                    laydate.render({
+                        elem: this
+                        , closeStop: this
+                        , calendar: true
+                        , theme: '#393D49'
+                    });
+                });
+            }
         });
 
         //监听行工具事件
         table.on('tool(demo)', function (obj) {
             let data = obj.data;
-            if (obj.event === 'date') {
-                let field = $(this).data('field');
-                laydate.render({
-                    elem: this.firstChild
-                    , show: true //直接显示
-                    , closeStop: this
-                    , calendar: true
-                    , theme: '#393D49'
-                    , done: function (value, date) {
-                        obj.update({
-                            [field]: value
-                        });
-                    }
-                });
-            } else if (obj.event === 'date2') {
-                let field = $(this).data('field');
-                laydate.render({
-                    elem: this.firstChild
-                    , show: true //直接显示
-                    , closeStop: this
-                    , calendar: true
-                    , theme: '#393D49'
-                    , done: function (value, date) {
-                        obj.update({
-                            [field]: value
-                        });
-                    }
-                });
-            } else if (obj.event === 'save') {
+            if (obj.event === 'save') {
                 let tableBack = table.cache["demo"];
                 let lists = [];
                 for (let i = 0; i < tableBack.length; i++) {
@@ -140,11 +124,11 @@
                     list.ID = window.localStorage.getItem('ID');
                     list.suppliercode = tableBack[i].suppliercode;
                     list.suppliername = tableBack[i].suppliername;
-                    list.startdate = tableBack[i].startdate;
-                    list.enddate = tableBack[i].enddate;
+                    list.startdate = $('.date1').eq(i).val();
+                    list.enddate = $('.date2').eq(i).val();
                     lists.push(list);
                 }
-                // console.log(JSON.stringify(lists));
+                console.log(JSON.stringify(lists));
                 $.ajax({
                     url: '/DateChanged'
                     , data: JSON.stringify(lists)

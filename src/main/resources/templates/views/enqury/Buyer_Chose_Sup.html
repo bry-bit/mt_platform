@@ -104,7 +104,6 @@
             ]
         });
 
-
         //监听行工具事件
         table.on('tool(demo)', function (obj) {
             let data = obj.data;
@@ -148,53 +147,64 @@
             $("input:checkbox[name='layTableCheckbox']").each(function () { //遍历checkbox的选择状态
                 if ($(this).is(':checked') && $(this).closest('tr').find('td').eq(1).text() != "") {
                     //如果值为checked表明选中了
-                    let list = {};
-                    list.suppliercode = $(this).closest('tr').find('td').eq(1).text();
-                    list.suppliername = $(this).closest('tr').find('td').eq(2).text();
-                    list.startdate = $(this).closest('tr').find('td').eq(3).text();
-                    console.log($(this).closest('tr').find('td').eq(4).text());
-                    if ($(this).closest('tr').find('td').eq(4).text() == ''
-                        || $(this).closest('tr').find('td').eq(4).text() == null) {
-                        layer.alert("未填写结标日期！");
+                    if ($(this).closest('tr').find('td').eq(4).text() == '<empty string>'
+                        || $(this).closest('tr').find('td').eq(4).text() == null
+                        || $(this).closest('tr').find('td').eq(4).text() == '') {
+                        layer.alert($(this).closest('tr').find('td').eq(2).text() + "未填写结标日期！");
                     } else {
-                        list.enddate = $(this).closest('tr').find('td').eq(4).text();
+                        let list = {};
+                        list.suppliercode = $(this).closest('tr').find('td').eq(1).text();
+                        list.suppliername = $(this).closest('tr').find('td').eq(2).text();
+                        list.startdate = $(this).closest('tr').find('td').eq(3).text();
+                        console.log($(this).closest('tr').find('td').eq(4).text());
+                        if ($(this).closest('tr').find('td').eq(4).text() == '<empty string>'
+                            || $(this).closest('tr').find('td').eq(4).text() == null
+                            || $(this).closest('tr').find('td').eq(4).text() == '') {
+                            layer.alert($(this).closest('tr').find('td').eq(2).text() + "未填写结标日期！");
+                        } else {
+                            list.enddate = $(this).closest('tr').find('td').eq(4).text();
+                            lists.push(list);
+
+                            tipList.list = lists;
+                            console.log(JSON.stringify(tipList));
+
+                            $.ajax({
+                                type: 'post'
+                                , url: '/InsertTable?table=' + window.localStorage.getItem('table')
+                                , data: JSON.stringify(tipList)
+                                , dataType: 'json'
+                                , async: false
+                                , contentType: 'application/json; charset=utf-8'
+                                , beforeSend: function () {
+                                    indexs = layer.load(1);
+                                }
+                                , success: function (res) {
+                                    if (res.code == "0") {
+                                        layer.msg('添加供应商成功！', {
+                                            offset: '15px'
+                                            , icon: 1
+                                            , time: 1000
+                                        }, function () {
+                                            layer.close(indexs);
+                                            parent.layer.close(index);//关闭弹出层
+                                        });
+                                    } else {
+                                        layer.msg(res.msg, {
+                                            offset: '15px'
+                                            , icon: 2
+                                            , time: 1000
+                                        }, function () {
+                                            layer.close(indexs);
+                                        });
+                                    }
+                                }
+                            });
+                        }
+
                     }
-                    lists.push(list);
                 }
             });
-            tipList.list = lists;
-            // layer.alert(JSON.stringify(tipList));
-            $.ajax({
-                type: 'post'
-                , url: '/InsertTable?table=' + window.localStorage.getItem('table')
-                , data: JSON.stringify(tipList)
-                , dataType: 'json'
-                , async: false
-                , contentType: 'application/json; charset=utf-8'
-                , beforeSend: function () {
-                    indexs = layer.load(1);
-                }
-                , success: function (res) {
-                    if (res.code == "0") {
-                        layer.msg('添加供应商成功！', {
-                            offset: '15px'
-                            , icon: 1
-                            , time: 1000
-                        }, function () {
-                            layer.close(indexs);
-                            parent.layer.close(index);//关闭弹出层
-                        });
-                    } else {
-                        layer.msg(res.msg, {
-                            offset: '15px'
-                            , icon: 2
-                            , time: 1000
-                        }, function () {
-                            layer.close(indexs);
-                        });
-                    }
-                }
-            })
+
         });
 
         //查询重载

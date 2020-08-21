@@ -158,6 +158,7 @@ public class Pur_SelectSup {
     @ResponseBody
     public String DateChanged(@RequestBody String data) {
         try {
+            System.out.println(data);
             if (StringUtils.isNotBlank(data)) {
                 data = data.trim();
                 if (data.startsWith("{") && data.endsWith("}")) {
