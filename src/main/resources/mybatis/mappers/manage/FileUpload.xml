@@ -31,7 +31,7 @@
     </select>
 
     <select id="SelectTableController" parameterType="String" resultMap="BaseResultMap">
-        select fd_file_name, fd_time, fd_creat_person
+        select *
         from cy_manage_files
         where fd_subject_id = #{ID}
     </select>
@@ -72,6 +72,6 @@
         group by fd_fileid
     </select>
 
-    <delete id="">
-    </delete>
+<!--    <delete id="">-->
+<!--    </delete>-->
 </mapper>

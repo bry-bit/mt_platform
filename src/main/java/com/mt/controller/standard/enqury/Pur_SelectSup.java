@@ -138,6 +138,7 @@ public class Pur_SelectSup {
     @ResponseBody
     public String ExistingSupplier(String ID) {
         try {
+            System.out.println("ID:" + ID);
             List<cy_supplier> supplierList = mapper.select_supp(ID, null, null);
 
             return JSONUtil.toJson("0", supplierList, "查询成功！", "");
@@ -181,5 +182,39 @@ public class Pur_SelectSup {
         }
     }
 
-
+    /**
+     * 删除已选择的供应商
+     *
+     * @param data 要删除供应商的数据
+     * @return
+     */
+    @RequestMapping("Delete_Supplier")
+    @ResponseBody
+    public String Delete_Supplier(@RequestBody String data) {
+        try {
+            System.out.println("删除的data:" + data);
+            if (StringUtils.isNotBlank(data)) {
+                data = data.trim();
+                if (data.startsWith("{") && data.endsWith("}")) {
+                    String ID = JSONObject.parseObject(data).getString("iD");
+                    cy_supplier cySupplier = ObjectMapperUtil.toObject(data, cy_supplier.class);
+                    cySupplier.setID(ID);
+                    System.out.println("cySupplier(单):" + cySupplier);
+                    mapper.delete_message(cySupplier);
+                } else {
+                    List<cy_supplier> inquiryList = JSONObject.parseArray(data, cy_supplier.class);
+                    for (int i = 0; i < inquiryList.size(); i++) {
+                        cy_supplier cySupplier = JSONObject.parseObject(
+                                JSONObject.toJSONString(inquiryList.get(i)), cy_supplier.class);
+                        System.out.println("cySupplier(双):" + cySupplier);
+                        mapper.delete_message(cySupplier);
+                    }
+                }
+            }
+            return JSONUtil.toJson("0", "", "删除成功！", "");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JSONUtil.toJson("1", "", "删除失败！", "");
+        }
+    }
 }

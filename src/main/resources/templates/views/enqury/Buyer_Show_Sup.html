@@ -144,7 +144,7 @@
                     list.enddate = tableBack[i].enddate;
                     lists.push(list);
                 }
-                console.log(JSON.stringify(lists));
+                // console.log(JSON.stringify(lists));
                 $.ajax({
                     url: '/DateChanged'
                     , data: JSON.stringify(lists)
@@ -177,14 +177,14 @@
                 })
             } else if (obj.event === 'del') {
                 $.ajax({
-                    url: '/'
+                    type: "post"
+                    , url: '/Delete_Supplier'
                     , data: JSON.stringify(data)
                     , dataType: 'json'
                     , contentType: 'application/json; charset=utf-8'
                     , beforeSend: function () {
                         indexs = layer.load(1);
                     }
-                    , type: "post"
                     , success: function (res) {
                         if (res.code == "0") {
                             layer.msg('删除成功！', {

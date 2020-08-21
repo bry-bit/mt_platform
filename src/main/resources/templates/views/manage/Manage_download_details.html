@@ -49,7 +49,7 @@
                     , {field: 'fd_creat_person', title: '上传人', align: "center"}
                     , {
                     field: '', title: '下载', align: "center", templet: function (row) {
-                        return '<a type="button" class="layui-btn" id="fileN">' +
+                        return '<a type="button" class="layui-btn layui-btn-sm" lay-event="fileN">' +
                             '            <i class="layui-icon" style="font-size: 30px;">&#xe601;</i>下载文件' +
                             '<input type="text" value="' + row.fd_id + '" style="display: none" id="data">' +
                             '        </a>';
@@ -59,17 +59,20 @@
             ]
         });
 
-
-        $('#fileN').on('click', function () {
-            $.ajax({
-                type: 'post'
-                ,url: '/downloadFile?userid=' + parent.layui.index.getCookie("Login_ID") + '&fileid=' + $('#data').val()
-                ,async: false
-                ,contentType: 'application/json; charset=utf-8'
-                ,success: function (res) {
-                    layer.alert(res);
-                }
-            })
+        table.on('tool(demo)', function (obj) {
+            if (obj.event == "fileN") {
+                // layer.alert("fileid=" + $('#data').val());
+                window.location.href = '/downloadFile?userid=' + parent.layui.index.getCookie("Login_ID") + '&fileid=' + $('#data').val()
+                // $.ajax({
+                //     type: 'post'
+                //     ,url: '
+                //     ,async: false
+                //     ,contentType: 'application/json; charset=utf-8'
+                //     ,success: function (res) {
+                //         layer.alert(res);
+                //     }
+                // })
+            }
         });
 
 

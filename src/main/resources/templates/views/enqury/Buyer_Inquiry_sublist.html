@@ -179,7 +179,7 @@
         // 监听工具条
         table.on('tool(demo)', function (obj) {
             if (obj.event === 'fianlSup') {
-                window.localStorage.setItem('ID', obj.data.fd_parent_id);
+                window.localStorage.setItem('ID', obj.data.fd_id);
                 parent.layer.open({
                     type: 2
                     , title: obj.data.fd_inventory_name + '(' + obj.data.fd_inventory_no + ')'
