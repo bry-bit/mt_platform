@@ -21,6 +21,8 @@ public class cy_ksummary_details {
     private String fd_parameter;//参数
     private String fd_unit;//单位
     private String fd_price;//单价
+    private String fd_cycle;//供货周期
+    private String fd_methods;//付款方式
     private String fd_supplier_name;//供应商名称
     private String fd_supplier_code;//供应商编码
     private String fd_technical_para;//报价技术参数

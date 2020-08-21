@@ -60,4 +60,9 @@
             fd_add1=#{fd_add1}
         where fd_id = #{fd_id}
     </update>
+
+    <!--查询到货凭证URL-->
+    <select id="select_url" parameterType="String" resultType="String">
+        select fd_arrival_certificate from cy_supplier_deliver_details where fd_id=#{fd_id}
+    </select>
 </mapper>

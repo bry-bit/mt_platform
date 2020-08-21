@@ -18,4 +18,7 @@ public interface Pur_OrderMapper {
 
     //根据报价单子表ID更新数据
     void order_sonUpdate(cy_order_detailed orderDetailed);
+
+    //根据数据ID查询到货凭证URL
+    String select_url(String fd_id);
 }

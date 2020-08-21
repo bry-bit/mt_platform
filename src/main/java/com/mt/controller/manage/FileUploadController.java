@@ -147,7 +147,9 @@ public class FileUploadController {
         }
         //被下载的文件在服务器中的路径
         String path = "D:/美腾供应商平台附件管理/";
-//        fileid = "67209B18CA1F4D0E914D9CB6DD6963FE";
+        if (fileid == null) {
+            fileid = "CFFB22F35E604C759571BCCFA428FB19";
+        }
         //被下载文件的名称
         String fileName = service.SelectUrl(fileid);//根据文件ID查询该文件上传URL
         String userAgent = request.getHeader("User-Agent");

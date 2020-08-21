@@ -48,8 +48,134 @@
 
     <!--############################################报价SQL#############################################-->
 
+    <!--插入报价单主表数据-->
+    <insert id="order_main">
+        insert into cy_koffer (fd_id
+        ,fd_inquiry_id
+        ,fd_inquiry_no
+        ,fd_applicant
+        ,fd_creat_time
+        ,fd_remarks) values ( #{fd_id}
+        ,#{fd_inquiry_id}
+        ,#{fd_inquiry_no}
+        ,#{fd_applicant}
+        ,#{fd_creat_time}
+        ,#{fd_remarks})
+    </insert>
 
+    <!--插入报价单子表数据-->
+    <insert id="order_son">
+        insert into cy_koffer_details ( fd_id
+        ,fd_parent_id
+        ,fd_inquiry_ids
+        ,fd_inventory_name
+        ,fd_inventory_no
+        ,fd_brand
+        ,fd_model
+        ,fd_parameter
+        ,fd_unit
+        ,fd_price
+        ,fd_cycle
+        ,fd_methods
+        ,fd_bid_opentime
+        ,fd_bid_closetime
+        ,fd_supplier_name
+        ,fd_supplier_code
+        ,fd_technical_para
+        ,fd_validity_date
+        ,fd_remarks) values(#{fd_id}
+        ,#{fd_parent_id}
+        ,#{fd_inquiry_ids}
+        ,#{fd_inventory_name}
+        ,#{fd_inventory_no}
+        ,#{fd_brand}
+        ,#{fd_model}
+        ,#{fd_parameter}
+        ,#{fd_unit}
+        ,#{fd_price}
+        ,#{fd_cycle}
+        ,#{fd_methods}
+        ,#{fd_bid_opentime}
+        ,#{fd_bid_closetime}
+        ,#{fd_supplier_name}
+        ,#{fd_supplier_code}
+        ,#{fd_technical_para}
+        ,#{fd_validity_date}
+        ,#{fd_remarks})
+    </insert>
 
+    <!--更新报价单主表数据-->
+    <update id="main_update">
+        update cy_koffer set fd_quotation_tatus=#{fd_quotation_tatus} where fd_id=#{fd_id}
+    </update>
 
+    <!--更新报价单子表数据-->
+    <update id="update_son">
+        update cy_koffer_details set
+                 fd_model=#{fd_model}
+                ,fd_offer=#{fd_offer}
+                ,fd_offer_time=#{fd_offer_time}
+                ,fd_return=#{fd_return}
+                ,fd_return_reason=#{fd_return_reason}
+                ,fd_quotation_tatus=#{fd_quotation_tatus}
+                ,fd_modificatio_person=#{fd_modificatio_person}
+                ,fd_modificatio_time=getdate()
+        where fd_parent_id=#{fd_parent_id}
+    </update>
+
+    <!--查询报价单主表数据-->
+    <select id="Select_order" resultType="com.mt.pojo.frame.cy_koffer">
+        <if test="fd_applicant != null and fd_applicant != ''">
+            select *
+            from cy_koffer
+            where fd_quotation_tatus is null
+            and fd_applicant = #{fd_applicant}
+            order by fd_inquiry_no desc
+        </if>
+        <if test="fd_supplier_name != null and fd_supplier_name != ''">
+            select distinct o.*
+            from cy_koffer o
+            left join MTsupplier.dbo.cy_koffer_details d on o.fd_id = d.fd_parent_id
+            where 1 = 1
+            and o.fd_quotation_tatus is null
+            <if test="fd_supplier_name != null and fd_supplier_name != ''">
+                and  #{fd_supplier_name} in
+                (select distinct d.fd_supplier_name
+                from MTsupplier.dbo.cy_koffer_details
+                where d.fd_parent_id = o.fd_id)
+            </if>
+            order by fd_inquiry_no desc
+        </if>
+    </select>
+
+    <!--查询报价单子表数据-->
+    <select id="select_son" parameterType="String" resultType="com.mt.pojo.frame.cy_kinquiry_details">
+        select * from cy_koffer_details where fd_parent_id=#{fd_parent_id}
+    </select>
+
+    <!--查询中标的报价单生成汇总表主表-->
+    <select id="Select_summary" resultType="com.mt.pojo.frame.cy_koffer">
+        <if test="fd_applicant != null and fd_applicant != ''">
+            select *
+            from cy_koffer
+            where fd_quotation_tatus='2'
+            and fd_applicant = #{fd_applicant}
+            order by fd_inquiry_no desc
+        </if>
+        <if test="fd_supplier_name != null and fd_supplier_name != ''">
+            select distinct o.*
+            from cy_koffer o
+            left join MTsupplier.dbo.cy_koffer_details d on o.fd_id = d.fd_parent_id
+            where 1 = 1
+            and o.fd_quotation_tatus='2'
+            <if test="fd_supplier_name != null and fd_supplier_name != ''">
+                and  #{fd_supplier_name} in
+                (select distinct d.fd_supplier_name
+                from MTsupplier.dbo.cy_koffer_details
+                where d.fd_parent_id = o.fd_id)
+            </if>
+            order by fd_inquiry_no desc
+        </if>
+    </select>
 
 </mapper>

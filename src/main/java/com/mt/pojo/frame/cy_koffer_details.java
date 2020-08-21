@@ -21,6 +21,8 @@ public class cy_koffer_details {
     private String fd_parameter;//参数
     private String fd_unit;//单位
     private String fd_price;//单价
+    private String fd_cycle;//供货周期
+    private String fd_methods;//付款方式
     private String fd_bid_opentime;//开标时间
     private String fd_bid_closetime;//截标时间
     private String fd_supplier_name;//供应商名称
