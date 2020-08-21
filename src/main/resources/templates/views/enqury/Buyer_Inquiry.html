@@ -25,6 +25,9 @@
 </div>
 
 <script src="collection/layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="jquery/jquery-3.4.1.js"></script>
+<script type="text/javascript" src="jquery/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="jquery/jquery.cookie.js"></script>
 <script>
     Date.prototype.pattern = function (fmt) {
         let o = {
@@ -124,7 +127,7 @@
                     }
                 }
                     , {
-                    field: '', title: '<a type="button" class="layui-btn layui-btn-sm" id="Whether_editor">是否子表询价</a>'
+                    field: '', title: '<a type="button" class="layui-btn layui-btn-sm" id="Whether_editor">子表询价</a>'
                     , align: "center", templet: function (row) {
                         if (row.fd_edit == 'Y') {
                             return '<a class="layui-btn layui-btn-sm" lay-event="bianji">编辑</a>';
@@ -193,20 +196,35 @@
             if (JSON.stringify(data).length == 2) {
                 layer.alert("未选择需要进行子表询价的请购单！");
             } else {
-                parent.layer.open({
-                    type: 2
-                    , title: '是否子表询价'
-                    , area: ['30%', '30%']
-                    , shade: 0
-                    , maxmin: true
-                    , content: ['/page?url=/enqury/Buyer_Chose_Inquiry.html', 'yes']
-                    , success: function (layero, index) {
-                        let body = parent.layui.layer.getChildFrame('body', index);
-                        //将选中的数据的id传到编辑页面的隐藏域，便于根据ID修改数据
-                        body.find("#SupData").val(JSON.stringify(data));
+                $.ajax({
+                    type: 'post'
+                    , url: '/ChildInquiry?fd_edit=Y'
+                    , data: JSON.stringify(data)
+                    , dataType: 'json'
+                    , async: false
+                    , contentType: 'application/json; charset=utf-8'
+                    , beforeSend: function () {
+                        indexs = layer.load(1);
                     }
-                    , end: function () {
-                        window.location.reload();
+                    , success: function (res) {
+                        if (res.code == "0") {
+                            layer.msg('提交成功！', {
+                                offset: '15px'
+                                , icon: 1
+                                , time: 1000
+                            }, function () {
+                                layer.close(indexs);
+                                location.reload();
+                            });
+                        } else {
+                            layer.msg(res.msg, {
+                                offset: '15px'
+                                , icon: 2
+                                , time: 1000
+                            }, function () {
+                                layer.close(indexs);
+                            });
+                        }
                     }
                 });
             }
@@ -218,8 +236,10 @@
             let topLayui = parent === self ? layui : top.layui;
             if (obj.event === 'bianji') {
                 topLayui.index.openTabsPage("/page?url=/enqury/Buyer_Inquiry_sublist.html", obj.data.fd_no);
-
+                //主表ID
                 window.localStorage.setItem('fd_parent_id', obj.data.fd_id);
+                //主表数据
+                window.localStorage.setItem('data', JSON.stringify(obj.data));
             } else if (obj.event === 'wbianji') {
                 topLayui.index.openTabsPage("/page?url=/enqury/Buyer_Inquiry_sublist.html", obj.data.fd_no);
 

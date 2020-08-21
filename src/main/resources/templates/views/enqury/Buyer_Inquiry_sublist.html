@@ -41,6 +41,7 @@
             <!--            <button type="button" class="layui-btn layui-btn-normal" id="query">查询</button>-->
             <a type="button" class="layui-btn layui-btn-sm" id="Choose_sup">选择供应商</a>
             <button type="button" class="layui-btn layui-btn-sm layui-btn-danger" id="release">发布</button>
+<!--            <a type="button" class="layui-btn layui-btn-sm" id="Choose_main">切换为主表询价</a>-->
         </form>
         <hr>
         <table class="layui-hide" id="demo" lay-filter="demo"></table>
@@ -237,6 +238,41 @@
                 }
             })
         });
+
+        // $('#Choose_main').on('click', function () {
+        //     let data = window.localStorage.getItem('data');
+        //     $.ajax({
+        //         type: 'post'
+        //         , url: '/ChildInquiry?fd_edit=null'
+        //         , data: data
+        //         , dataType: 'json'
+        //         , async: false
+        //         , contentType: 'application/json; charset=utf-8'
+        //         , beforeSend: function () {
+        //             indexs = layer.load(1);
+        //         }
+        //         , success: function (res) {
+        //             if (res.code == "0") {
+        //                 layer.msg('提交成功！', {
+        //                     offset: '15px'
+        //                     , icon: 1
+        //                     , time: 1000
+        //                 }, function () {
+        //                     layer.close(indexs);
+        //                     location.reload();
+        //                 });
+        //             } else {
+        //                 layer.msg(res.msg, {
+        //                     offset: '15px'
+        //                     , icon: 2
+        //                     , time: 1000
+        //                 }, function () {
+        //                     layer.close(indexs);
+        //                 });
+        //             }
+        //         }
+        //     });
+        // });
     });
 </script>
 </body>
