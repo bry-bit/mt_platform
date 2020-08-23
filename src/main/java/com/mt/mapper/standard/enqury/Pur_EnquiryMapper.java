@@ -27,7 +27,8 @@ public interface Pur_EnquiryMapper {
     void Person_inquiry(cy_inquiry_detailed cyInquiryDetailed);
 
     //根据询价单主表ID查询询价单子表数据
-    List<cy_inquiry_detailed> Person_inqdata(String fd_parent_id);
+    List<cy_inquiry_detailed> Person_inqdata(@Param("fd_parent_id") String fd_parent_id
+            , @Param("cPersonName") String cPersonName);
 
     //新增报价单
     void Main_order(cy_order cyOrder);

@@ -56,4 +56,5 @@ public class cy_inquiry_detailed {
     private String suppliername;
     @Column(name = "fd_edit")
     private String fd_edit;
+    private String cPersonName;
 }

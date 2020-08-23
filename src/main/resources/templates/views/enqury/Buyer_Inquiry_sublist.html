@@ -41,7 +41,7 @@
             <!--            <button type="button" class="layui-btn layui-btn-normal" id="query">查询</button>-->
             <a type="button" class="layui-btn layui-btn-sm" id="Choose_sup">选择供应商</a>
             <button type="button" class="layui-btn layui-btn-sm layui-btn-danger" id="release">发布</button>
-<!--            <a type="button" class="layui-btn layui-btn-sm" id="Choose_main">切换为主表询价</a>-->
+            <!--            <a type="button" class="layui-btn layui-btn-sm" id="Choose_main">切换为主表询价</a>-->
         </form>
         <hr>
         <table class="layui-hide" id="demo" lay-filter="demo"></table>
@@ -102,6 +102,7 @@
         table.render({
             elem: '#demo'
             , url: '/QueryChildTable?fd_parent_id=' + window.localStorage.getItem('fd_parent_id')
+                + '&name=' + parent.layui.index.getCookie("Login_Name")
             , page: true
             , limit: 30
             , limits: [30, 50, 100]
@@ -131,6 +132,7 @@
                     }
                 }
                     , {field: 'fd_remarks', title: '备注', align: "center"}
+                    , {field: 'cPersonName', title: '执行人', align: "center"}
                     , {
                     field: '', title: '历史报价', align: "center", templet: function (row) {
                         return '<a type="button" class="layui-btn layui-btn-sm" lay-event="history">历史报价</a>'

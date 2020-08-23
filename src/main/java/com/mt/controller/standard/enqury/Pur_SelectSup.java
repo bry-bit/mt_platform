@@ -58,6 +58,7 @@ public class Pur_SelectSup {
     @ResponseBody
     public String InsertTable(@RequestBody String data, String table) {
         try {
+            System.out.println("选择的供应商：" + data);
             //将两个json传进行分离
             JSONObject object = JSONObject.parseObject(data);
             String supList = object.getString("list");

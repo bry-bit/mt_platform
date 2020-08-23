@@ -3,9 +3,10 @@
 <mapper namespace="com.mt.mapper.standard.enqury.Pur_EnquiryMapper">
     <!-- 获取U8请购单到询价表中，并展现相应的供应商数据 -->
     <select id="Main_sheet" resultType="com.mt.pojo.standard.cy_inquiry">
-        select c.*, Person.cPersonName, cs.suppliername, cs.sum, Department.cDepName, PurchaseType.cPTName
+        select distinct c.*, cs.suppliername, cs.sum, Department.cDepName, PurchaseType.cPTName
         from cy_inquiry c
-                     left join [UFDATA_001_2015].[dbo].Person on Person.cPersonCode = c.fd_applicant
+                     left join MTsupplier.dbo.cy_inquiry_detailed m on m.fd_parent_id = c.fd_id
+                     left join [UFDATA_001_2015].[dbo].Person on Person.cPersonCode = m.fd_order_person
                      left join [UFDATA_001_2015].[dbo].Department on Department.cDepCode = c.fd_apply_department
                      left join [UFDATA_001_2015].[dbo].PurchaseType on PurchaseType.cPTCode = c.fd_apply_purtype
                      left join (select               s.ID,
@@ -51,9 +52,10 @@
 
     <!-- 根据询价单主表ID查询询价单子表数据-->
     <select id="Person_inqdata" parameterType="String" resultType="com.mt.pojo.standard.cy_inquiry_detailed">
-        select c.*, cs.suppliername, cs.sum, ci.fd_edit
+        select c.*, cs.suppliername, cs.sum, ci.fd_edit, Person.cPersonName
         from cy_inquiry_detailed c
                      left join cy_inquiry ci on c.fd_parent_id = ci.fd_id
+                     left join [UFDATA_001_2015].[dbo].Person on Person.cPersonCode = c.fd_order_person
                      left join (select               s.ID,
                                         suppliername=(stuff((SELECT ',' + suppliername
                                                              FROM cy_supplier
@@ -63,6 +65,7 @@
                                 from cy_supplier s
                                 GROUP BY s.ID) cs on c.fd_id = cs.ID
         where fd_parent_id = #{fd_parent_id}
+          and Person.cPersonName = #{cPersonName}
           and c.fd_status is null
     </select>
 
@@ -113,11 +116,13 @@
 
     <!--插入报价单子表数据-->
     <insert id="Person_order" parameterType="com.mt.pojo.standard.cy_order_detailed">
-        insert into cy_order_detailed (fd_id, fd_parent_id, fd_inquiry_ids, fd_order_person,fd_inventory_name, fd_inventory_no,
+        insert into cy_order_detailed (fd_id, fd_parent_id, fd_inquiry_ids, fd_order_person, fd_inventory_name,
+                                       fd_inventory_no,
                                        fd_model, fd_unit, fd_purchase_avaqty, fd_tax,
                                        fd_ship_addr, fd_arrival_house, fd_bid_opentime, fd_bid_closetime,
                                        fd_supplier_name, fd_supplier_code)
-        values (#{fd_id}, #{fd_parent_id}, #{fd_inquiry_ids},#{fd_order_person}, #{fd_inventory_name}, #{fd_inventory_no},
+        values (#{fd_id}, #{fd_parent_id}, #{fd_inquiry_ids}, #{fd_order_person}, #{fd_inventory_name},
+                #{fd_inventory_no},
                 #{fd_model},
                 #{fd_unit}, #{fd_purchase_avaqty}, #{fd_tax},
                 #{fd_ship_addr}, #{fd_arrival_house}, #{fd_bid_opentime}, #{fd_bid_closetime}, #{fd_supplier_name},

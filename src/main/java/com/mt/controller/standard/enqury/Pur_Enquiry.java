@@ -89,10 +89,10 @@ public class Pur_Enquiry {
      */
     @RequestMapping("QueryChildTable")
     @ResponseBody
-    public String QueryChildTable(String fd_parent_id) {
+    public String QueryChildTable(String fd_parent_id, String name) {
         try {
             System.out.println("fd_parent_id:" + fd_parent_id);
-            List<cy_inquiry_detailed> list = mapper.Person_inqdata(fd_parent_id);
+            List<cy_inquiry_detailed> list = mapper.Person_inqdata(fd_parent_id, name);
             System.out.println("list:" + list);
             return JSONUtil.toJson("0", list, "获取成功！", "");
         } catch (Exception e) {
@@ -105,7 +105,7 @@ public class Pur_Enquiry {
     @ResponseBody
     public String Generating_Quotation(@RequestBody String data, String table, String name) {
         try {
-            System.out.println(data);
+            System.out.println("data=" + data);
 
             //判断传值的为主表还是子表
             if (table.equals("primary")) {
@@ -140,7 +140,7 @@ public class Pur_Enquiry {
                         mapper.Main_order(cyOrder);
 
                         //循环子表
-                        List<cy_inquiry_detailed> cyInquiryDetaileds = mapper.Person_inqdata(cyInquiryList.get(i).getFd_id());
+                        List<cy_inquiry_detailed> cyInquiryDetaileds = mapper.Person_inqdata(cyInquiryList.get(i).getFd_id(), name);
                         for (int k = 0; k < cyInquiryDetaileds.size(); k++) {
                             String uuid1 = IDUtil.getUUID();
                             cy_order_detailed cyOrderDetailed = new cy_order_detailed();
@@ -165,11 +165,15 @@ public class Pur_Enquiry {
                     mapper.Main_inquiry(cyInquiry);
                 }
             } else {
+                System.out.println("子表发布");
                 //传子表数据
                 List<cy_inquiry_detailed> cyInquiryDetailedList = JSONObject.parseArray(data, cy_inquiry_detailed.class);
                 //查询主表数据
                 List<cy_inquiry> cyInquiryList = mapper.Main_sheet(name, cyInquiryDetailedList.get(0).getFd_parent_id());
+                System.out.println("cyInquiryDetailedList.get(0).getFd_parent_id()=" + cyInquiryDetailedList.get(0).getFd_parent_id());
+                System.out.println("cyInquiryList.size()=" + cyInquiryList.size());
                 for (int i = 0; i < cyInquiryList.size(); i++) {
+                    System.out.println("进入报价单主表循环");
                     cy_order cyOrder = new cy_order();
                     cyOrder.setFd_id(IDUtil.getUUID());
                     cyOrder.setFd_no(randomUtil.getNewAutoNum());
@@ -186,14 +190,18 @@ public class Pur_Enquiry {
 
                     //报价主表插入
                     mapper.Main_order(cyOrder);
-
+                    System.out.println("cyInquiryDetailedList.size()=" + cyInquiryDetailedList.size());
                     for (int j = 0; j < cyInquiryDetailedList.size(); j++) {
+
                         String uuid1 = IDUtil.getUUID();
                         cy_order_detailed cyOrderDetailed = new cy_order_detailed();
                         //循环已选择的供应商
+                        System.out.println(" 传入ID=" + cyInquiryDetailedList.get(i).getFd_id());
                         List<cy_supplier> cySuppliers = supMapper.select_supp(
-                                cyInquiryList.get(i).getFd_id(), null, null);
+                                cyInquiryDetailedList.get(j).getFd_id(), null, null);
+                        System.out.println("cySuppliers=" + cySuppliers);
                         for (int k = 0; k < cySuppliers.size(); k++) {
+                            System.out.println("人员=" + cyInquiryDetailedList.get(j).getFd_order_person());
                             cyOrderDetailed.setFd_id(uuid1);
                             cyOrderDetailed.setFd_parent_id(cyOrder.getFd_id());
                             cyOrderDetailed.setFd_inquiry_ids(cyInquiryDetailedList.get(j).getFd_id());
@@ -207,16 +215,19 @@ public class Pur_Enquiry {
                             cyOrderDetailed.setFd_supplier_code(cySuppliers.get(k).getSuppliercode());
                             cyOrderDetailed.setFd_bid_opentime(cySuppliers.get(k).getStartdate());
                             cyOrderDetailed.setFd_bid_closetime(cySuppliers.get(k).getEnddate());
+                            System.out.println("cyInquiryDetailedList.get(j).getFd_order_person()=" + cyInquiryDetailedList.get(j).getFd_order_person());
+                            cyOrderDetailed.setFd_order_person(cyInquiryDetailedList.get(j).getFd_order_person());
 
+                            //System.out.println(cyOrderDetailed);
                             //报价子表插入
-                            mapper.Person_order(cyOrderDetailed);
-                        }
+//                            mapper.Person_order(cyOrderDetailed);
 
-                        //修改子表发布状态值
-                        cy_inquiry_detailed detailed = JSONObject.parseObject(
-                                JSONObject.toJSONString(cyInquiryDetailedList.get(j)), cy_inquiry_detailed.class);
-                        detailed.setFd_status("1");
-                        mapper.Person_inquiry(detailed);
+                            //修改子表发布状态值
+                            cy_inquiry_detailed detailed = JSONObject.parseObject(
+                                    JSONObject.toJSONString(cyInquiryDetailedList.get(j)), cy_inquiry_detailed.class);
+                            detailed.setFd_status("1");
+                            mapper.Person_inquiry(detailed);
+                        }
                     }
                 }
             }
