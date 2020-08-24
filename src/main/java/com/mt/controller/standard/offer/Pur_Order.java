@@ -57,7 +57,7 @@ public class Pur_Order {
      */
     @RequestMapping("Inquiry_Quotation_Sublist")
     @ResponseBody
-    private String Inquiry_Quotation_Sublist(String fd_id) {
+    private String Inquiry_Quotation_Sublist(String fd_id, String fd_quotation_tatus) {
         try {
             List<cy_order_detailed> list = mapper.Select_orderson(fd_id);
             return JSONUtil.toJson("0", list, "获取成功！", "");

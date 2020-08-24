@@ -28,9 +28,8 @@ public class Pur_Arrival {
     Pur_OrderMapper pur_orderMapper;
 
     /**
-     *
      * @param fileN 文件
-     * @param map  json 包含数据ID 用于更新URL
+     * @param map   json 包含数据ID 用于更新URL
      * @return
      */
     @PostMapping(value = "/Arrival")
@@ -47,9 +46,9 @@ public class Pur_Arrival {
     public void demo1(@RequestBody Person person) {
         System.out.println(person.toString());*/
 
-        public Map<String,String> Arrival(@RequestParam MultipartFile[] fileN,  Map<String,String> map) {
+    public Map<String, String> Arrival(@RequestParam MultipartFile[] fileN, Map<String, String> map) {
         System.out.println("fileN=" + fileN);
-        String tt = "D:/美腾供应商平台附件管理/" + map.get("comment")+ "/" + map.get("fd_id") + "/";//D:/美腾供应商平台附件管理/资质证明/数据ID/
+        String tt = "D:/美腾供应商平台附件管理/" + map.get("comment") + "/" + map.get("fd_id") + "/";//D:/美腾供应商平台附件管理/资质证明/数据ID/
         System.out.println("tt=" + tt);
         SimpleDateFormat df1 = new SimpleDateFormat("yyyyMMdd HHmmss");
         System.out.println("文件数量=" + fileN.length);
@@ -66,12 +65,12 @@ public class Pur_Arrival {
             String name = fileName + df1.format(new Date()) + "." + fileType;//文件名称+yyyyMMdd HHmmss.后缀类型
             UploadUtils.approvalFile(fileN[i], tt, name);//上传文件
             try {
-                map.put("fd_url",map.get("comment")+ "/" + map.get("fd_id") + "/" + name);//文件URL:目录/数据ID/文件名称
+                map.put("fd_url", map.get("comment") + "/" + map.get("fd_id") + "/" + name);//文件URL:目录/数据ID/文件名称
                 System.out.println("成功");
             } catch (Exception e) {
                 e.printStackTrace();
                 //return JSONUtil.toJson("1", "", "上传" + fileName + "文件失败！", "");//返回前端上传文件状态
-                map.put("msg",JSONUtil.toJson("1", "", "上传" + fileName + "文件失败！", ""));
+                map.put("msg", JSONUtil.toJson("1", "", "上传" + fileName + "文件失败！", ""));
                 return map;
             }
         }
@@ -84,23 +83,23 @@ public class Pur_Arrival {
      *
      * @param request
      * @param response
-     * @param fd_id   数据ID
-     * @param type   到货凭证：1  资质证明：2
+     * @param fd_id    数据ID
+     * @param type     到货凭证：1  资质证明：2
      * @return
      * @throws Exception
      */
     @RequestMapping("/downArrival")
     @ResponseBody
-    private String downArrival(HttpServletRequest request, HttpServletResponse response, String fd_id,Integer type) throws Exception {
+    private String downArrival(HttpServletRequest request, HttpServletResponse response, String fd_id, Integer type) throws Exception {
 
         //被下载的文件在服务器中的路径
         String path = "D:/美腾供应商平台附件管理/";
-        String fileName ="";
+        String fileName = "";
         //被下载文件的名称
-        if(type==1) {
-             //获取上传到供应商发货子表的到货凭证路径
-             fileName = pur_orderMapper.select_url(fd_id);//根据文件ID查询该文件上传URL
-        }else if(type==2){
+        if (type == 1) {
+            //获取上传到供应商发货子表的到货凭证路径
+            fileName = pur_orderMapper.select_url(fd_id);//根据文件ID查询该文件上传URL
+        } else if (type == 2) {
             //获取供应商资质证明文件路径
         }
         String userAgent = request.getHeader("User-Agent");

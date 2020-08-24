@@ -64,7 +64,7 @@
         base: 'collection/layuiadmin/' //静态资源所在路径
     }).extend({
         index: 'lib/index' //主入口模块
-    }).use(['index', 'table'], function () {
+    }).use(['index', 'table', 'upload'], function () {
         let $ = layui.$
             , layer = layui.layer
             , indexs = ''
@@ -73,6 +73,7 @@
         table.render({
             elem: '#demo'
             , url: '/Inquiry_Quotation_Sublist?fd_id=' + window.localStorage.getItem('fd_id')
+                + "&fd_quotation_tatus=1"
             , height: 'full-35'
             , cols: [
                 [
@@ -113,7 +114,68 @@
                 }
                 ]
             ]
-        });    });
+        });
+
+        table.on('tool(demo)', function (obj) {
+            if (obj.event === 'uploadeSup') {
+                document.getElementById("fileN").click();
+            }
+        });
+
+        $('#save').on('click', function () {
+            let tableBack = table.cache["demo"];
+            let lists = [];
+            for (let i = 0; i < tableBack.length; i++) {
+                let list = {};
+                list.fd_id = tableBack[i].fd_id;
+                list.fd_inventory_name = tableBack[i].fd_inventory_name;
+                list.fd_inventory_no = tableBack[i].fd_inventory_no;
+                list.fd_model = tableBack[i].fd_model;
+                list.cComUnitName = tableBack[i].cComUnitName;
+                list.fd_purchase_avaqty = tableBack[i].fd_purchase_avaqty;
+                list.fd_tax = tableBack[i].fd_tax;
+                list.fd_offer = tableBack[i].fd_offer;
+                list.fd_offer_time = new Date($.ajax({async: false}).getResponseHeader("Date")).pattern("yyyy-MM-dd");
+                list.fd_add1 = tableBack[i].fd_add1;
+                list.fd_bid_opentime = tableBack[i].fd_bid_opentime;
+                list.fd_bid_closetime = tableBack[i].fd_bid_closetime;
+                list.fd_supplier_name = tableBack[i].fd_supplier_name;
+                list.fd_quotation_tatus = "1";
+                lists.push(list);
+            }
+
+            // layer.alert(JSON.stringify(lists));
+            $.ajax({
+                url: '/Supplier_Quotation'
+                , type: 'post'
+                , data: JSON.stringify(lists)
+                , dataType: 'json'
+                , contentType: 'application/json; charset=utf-8'
+                , beforeSend: function () {
+                    indexs = layer.load(1);
+                }
+                , success: function (res) {
+                    if (res.code === "0") {
+                        layer.close(indexs);
+                        layer.msg('保存成功！', {
+                            offset: '15px'
+                            , icon: 1
+                            , time: 1000
+                        }, function () {
+                            location.reload();
+                        });
+                    } else {
+                        layer.close(indexs);
+                        layer.msg('保存失败！', {
+                            offset: '15px'
+                            , icon: 2
+                            , time: 1000
+                        });
+                    }
+                }
+            })
+        });
+    });
 </script>
 </body>
 </html>

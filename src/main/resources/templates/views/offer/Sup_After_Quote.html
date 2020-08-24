@@ -115,6 +115,18 @@
                 ]
             ]
         });
+
+        //监听行单击事件（双击事件为：rowDouble）
+        table.on('rowDouble(demo)', function (obj) {
+            var data = obj.data;
+            var topLayui = parent === self ? layui : top.layui;
+
+            topLayui.index.openTabsPage("/page?url=/offer/Sup_After_QuotePrice.html"
+                , data.fd_no);
+
+            //从一个html页面传值到另一个html页面
+            window.localStorage.setItem('fd_id', data.fd_id);
+        });
     });
 </script>
 </body>

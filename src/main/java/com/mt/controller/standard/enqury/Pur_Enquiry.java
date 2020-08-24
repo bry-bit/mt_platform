@@ -101,6 +101,13 @@ public class Pur_Enquiry {
         }
     }
 
+    /**
+     * 新需求发布
+     * @param data 新需求发布的数据
+     * @param table 主子表（主：primary/子：sublist）
+     * @param name 登录人名称（行执行人）
+     * @return
+     */
     @RequestMapping("Generating_Quotation")
     @ResponseBody
     public String Generating_Quotation(@RequestBody String data, String table, String name) {
@@ -111,11 +118,13 @@ public class Pur_Enquiry {
             if (table.equals("primary")) {
                 //主表数据循环
                 List<cy_inquiry> cyInquiryList = JSONObject.parseArray(data, cy_inquiry.class);
+                System.out.println("主表数据:" + cyInquiryList);
                 for (int i = 0; i < cyInquiryList.size(); i++) {
                     String fd_no = randomUtil.getNewAutoNum();
                     //循环已选择的供应商
                     List<cy_supplier> cySuppliers = supMapper.select_supp(
                             cyInquiryList.get(i).getFd_no(), null, null);
+                    System.out.println("主表查询的供应商数据:" + cySuppliers);
                     for (int j = 0; j < cySuppliers.size(); j++) {
                         String uuid = IDUtil.getUUID();
                         cy_order cyOrder = new cy_order();
@@ -135,12 +144,15 @@ public class Pur_Enquiry {
                         cyOrder.setFd_supplier_code(cySuppliers.get(j).getSuppliercode());
                         cyOrder.setFd_bid_opentime(cySuppliers.get(j).getStartdate());
                         cyOrder.setFd_bid_closetime(cySuppliers.get(j).getEnddate());
-
+                        System.out.println("主表插入数据:" + cyOrder);
                         //报价主表插入
                         mapper.Main_order(cyOrder);
 
                         //循环子表
+                        System.out.println("主表fd_id：" + cyInquiryList.get(i).getFd_id());
+                        System.out.println("name:" + name);
                         List<cy_inquiry_detailed> cyInquiryDetaileds = mapper.Person_inqdata(cyInquiryList.get(i).getFd_id(), name);
+                        System.out.println("子表数据:" + cyInquiryDetaileds);
                         for (int k = 0; k < cyInquiryDetaileds.size(); k++) {
                             String uuid1 = IDUtil.getUUID();
                             cy_order_detailed cyOrderDetailed = new cy_order_detailed();
@@ -156,6 +168,7 @@ public class Pur_Enquiry {
                             cyOrderDetailed.setFd_order_person(name);
                             //报价子表插入
                             mapper.Person_order(cyOrderDetailed);
+                            System.out.println("子表插入数据:" + cyOrderDetailed);
                         }
                     }
 
@@ -222,6 +235,13 @@ public class Pur_Enquiry {
                             //System.out.println(cyOrderDetailed);
                             //报价子表插入
                             mapper.Person_order(cyOrderDetailed);
+
+
+                            //修改发布后主表的询价单状态
+                            cy_inquiry cyInquiry = JSONObject.parseObject(
+                                    JSONObject.toJSONString(cyInquiryList.get(i)), cy_inquiry.class);
+                            cyInquiry.setFd_status("1");
+                            mapper.Main_inquiry(cyInquiry);
 
                             //修改子表发布状态值
                             cy_inquiry_detailed detailed = JSONObject.parseObject(
