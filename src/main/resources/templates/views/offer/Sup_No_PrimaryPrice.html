@@ -73,7 +73,8 @@
         table.render({
             elem: '#demo'
             , url: '/Inquiry_Quotation_Sublist?fd_id=' + window.localStorage.getItem('fd_id')
-                + "&fd_quotation_tatus=null"
+                + "&fd_quotation_tatus=0" + "&name=" + parent.layui.index.getCookie("Login_Name")
+                + '&type=' + parent.layui.index.getCookie("Login_type")
             , height: 'full-35'
             , cols: [
                 [

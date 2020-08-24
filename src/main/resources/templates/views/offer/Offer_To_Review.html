@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>供应商招标流程————未报价主表</title>
+    <title>供应商招标流程————报价审核</title>
     <meta name="renderer" content="webkit">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -62,7 +62,7 @@
         base: 'collection/layuiadmin/' //静态资源所在路径
     }).extend({
         index: 'lib/index' //主入口模块
-    }).use(['index', 'table'], function () {
+    }).use(['index', 'table', 'upload'], function () {
         let $ = layui.$
             , layer = layui.layer
             , indexs = ''
@@ -70,64 +70,56 @@
 
         table.render({
             elem: '#demo'
-            , url: '/Inquiry_Quotation?name=' + parent.layui.index.getCookie("Login_Name")
-                + '&type=' + parent.layui.index.getCookie("Login_type") + "&fd_quotation_tatus=0"
-            // , page: true
-            // , limit: 30
-            // , limits: [30, 50, 100]
+            , url: '/OfferReview?name=' + parent.layui.index.getCookie("Login_Name")
             , height: 'full-35'
             , cols: [
                 [
                     {type: 'numbers'}
-                    , {field: 'fd_no', title: '询价单号', align: "center"}
-                    , {field: 'fd_inquiryid', title: 'U8请购单号', align: "center"}
-                    , {field: 'fd_apply_bustype', title: '业务类型', align: "center"}
+                    , {field: 'fd_inventory_name', title: '存货名称', align: "center", width: 110}
+                    , {field: 'fd_inventory_no', title: '存货编号', align: "center", width: 100}
+                    , {field: 'fd_model', title: '规格型号', align: "center", width: 100}
+                    , {field: 'cComUnitName', title: '主计量单位', align: "center", width: 100}
+                    , {field: 'fd_purchase_avaqty', title: '可采购数量', align: "center", width: 100}
+                    , {field: 'fd_tax', title: '税率', align: "center", width: 80}
+                    , {field: 'fd_offer', title: '报价', align: "center", edit: 'text', width: 100}
+                    , {field: 'fd_add1', title: '到货日期', align: "center", edit: 'text', width: 80}
                     , {
-                    field: 'fd_bid_opentime', title: '开标时间', align: "center", templet: function (row) {
-                        if (row.fd_bid_opentime == undefined) {
-                            return "";
-                        } else {
-                            return (new Date(row.fd_bid_opentime)).pattern("yyyy-MM-dd");
-                        }
+                    field: 'fd_bid_opentime', title: '开标时间', align: "center", width: 110, templet: function (row) {
+                        return (new Date(row.fd_bid_opentime)).pattern("yyyy-MM-dd");
                     }
                 }
                     , {
-                    field: 'fd_bid_closetime', title: '截标时间', align: "center", templet: function (row) {
-                        if (row.fd_bid_closetime == undefined) {
-                            return "";
-                        } else {
-                            return (new Date(row.fd_bid_closetime)).pattern("yyyy-MM-dd");
-                        }
+                    field: 'fd_bid_closetime', title: '截标时间', align: "center", width: 110, templet: function (row) {
+                        return (new Date(row.fd_bid_closetime)).pattern("yyyy-MM-dd");
                     }
                 }
-                    , {field: 'fd_supplier_name', title: '供应商', align: "center"}
-                    , {field: 'fd_remarks', title: '备注', align: "center"}
+                    , {field: 'fd_supplier_name', title: '供应商', align: "center", width: 100}
                     , {
-                    field: 'fd_creat_time', title: '创建时间', align: "center", templet: function (row) {
-                        if (row.fd_creat_time == undefined) {
-                            return "";
-                        } else {
-                            return (new Date(row.fd_creat_time)).pattern("yyyy-MM-dd");
-                        }
+                    field: '',
+                    title: '<a type="button" class="layui-btn layui-btn-sm" id="winning">中标</a>',
+                    align: "center",
+                    width: 80
+                    ,templet: function (row) {
+                        var html = '<input type="radio" id="bid" name="' + row.fd_inventory_no + '" lay-filter="layTableRadio">';
+                        return html;
                     }
                 }
-                    , {field: 'fd_order_person', title: '制单人', align: "center"}
+                    , {
+                    field: '',
+                    title: '<a type="button" class="layui-btn layui-btn-sm" id="return">退回' +
+                        '<input type="checkbox" name="layTableCheckbox" lay-skin="primary" lay-filter="layTableAllChoose"></a>',
+                    align: "center",
+                    width: 100,
+                    templet: function (row) {
+                        var html = "<input type='checkbox' name='layTableCheckbox' lay-skin='primary' lay-filter='layTableCheckbox'>";
+                        return html;
+                    }
+                }
                 ]
             ]
         });
 
-
-        //监听行单击事件（双击事件为：rowDouble）
-        table.on('rowDouble(demo)', function (obj) {
-            var data = obj.data;
-            var topLayui = parent === self ? layui : top.layui;
-
-            topLayui.index.openTabsPage("/page?url=/offer/Sup_No_PrimaryPrice.html"
-                , data.fd_no);
-
-            //从一个html页面传值到另一个html页面
-            window.localStorage.setItem('fd_id', data.fd_id);
-        });
+        
     });
 </script>
 </body>

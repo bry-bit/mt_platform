@@ -1,6 +1,7 @@
 package com.mt.controller.standard.offer;
 
 import com.alibaba.fastjson.JSONObject;
+
 import com.mt.mapper.standard.offer.Pur_OrderMapper;
 import com.mt.pojo.standard.cy_order;
 import com.mt.pojo.standard.cy_order_detailed;
@@ -31,10 +32,12 @@ public class Pur_Order {
     @ResponseBody
     public String Inquiry_Quotation(String name, String type, String fd_quotation_tatus) {
         try {
+
             //判断人员查询的类型
             if (type.equals("供应商")) {
-                System.out.println("供应商：" + name);
+                System.out.println(name + "," + type + "," + fd_quotation_tatus);
                 List<cy_order> list = mapper.Select_order(null, name, fd_quotation_tatus);
+                System.out.println("主表数据：" + list);
                 return JSONUtil.toJson("0", list, "获取成功！", "");
             } else {
                 System.out.println(name + "," + type + "," + fd_quotation_tatus);
@@ -57,10 +60,22 @@ public class Pur_Order {
      */
     @RequestMapping("Inquiry_Quotation_Sublist")
     @ResponseBody
-    private String Inquiry_Quotation_Sublist(String fd_id, String fd_quotation_tatus) {
+    private String Inquiry_Quotation_Sublist(String fd_id, String fd_quotation_tatus
+            , String name, String type) {
         try {
-            List<cy_order_detailed> list = mapper.Select_orderson(fd_id);
-            return JSONUtil.toJson("0", list, "获取成功！", "");
+            System.out.println("主表fd_id：" + fd_id);
+            System.out.println("主表报价状态：" + fd_quotation_tatus);
+            System.out.println("登陆状态：" + type);
+            System.out.println("登陆人：" + name);
+            //判断人员查询的类型
+            if (type.equals("供应商")) {
+                System.out.println("供应商：" + name);
+                List<cy_order_detailed> list = mapper.Select_orderson(fd_id, null, name, fd_quotation_tatus);
+                return JSONUtil.toJson("0", list, "获取成功！", "");
+            } else {
+                List<cy_order_detailed> list = mapper.Select_orderson(fd_id, name, null, fd_quotation_tatus);
+                return JSONUtil.toJson("0", list, "获取成功！", "");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return JSONUtil.toJson("1", "", "获取失败！", "");
@@ -96,6 +111,25 @@ public class Pur_Order {
         } catch (Exception e) {
             e.printStackTrace();
             return JSONUtil.toJson("1", "", "报价失败！", "");
+        }
+    }
+
+    /**
+     * 报价审核列表查询
+     *
+     * @param name
+     * @return
+     */
+    @RequestMapping("OfferReview")
+    @ResponseBody
+    public String OfferReview(String name) {
+        try {
+            System.out.println("审核人的name:" + name);
+            List<cy_order_detailed> list = mapper.audit(name);
+            return JSONUtil.toJson("0", list, "查询成功！", "");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JSONUtil.toJson("1", "", "查询失败！", "");
         }
     }
 }

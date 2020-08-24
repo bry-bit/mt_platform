@@ -12,7 +12,7 @@ import java.net.URL;
 public class test {
     public static void main(String[] args) {
         try {
-            URL url = new URL("http://117.50.54.210/u8eai/import.asp");
+            URL url = new URL("http://localhost/u8eai/import.asp");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setConnectTimeout(3000000);
             con.setReadTimeout(3000000);

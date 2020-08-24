@@ -103,9 +103,10 @@ public class Pur_Enquiry {
 
     /**
      * 新需求发布
-     * @param data 新需求发布的数据
+     *
+     * @param data  新需求发布的数据
      * @param table 主子表（主：primary/子：sublist）
-     * @param name 登录人名称（行执行人）
+     * @param name  登录人名称（行执行人）
      * @return
      */
     @RequestMapping("Generating_Quotation")
@@ -166,6 +167,11 @@ public class Pur_Enquiry {
                             cyOrderDetailed.setFd_purchase_avaqty(cyInquiryDetaileds.get(k).getFd_purchase_avaqty());
                             cyOrderDetailed.setFd_tax(cyInquiryDetaileds.get(k).getFd_tax());
                             cyOrderDetailed.setFd_order_person(name);
+                            cyOrderDetailed.setFd_bid_opentime(cySuppliers.get(j).getStartdate());
+                            cyOrderDetailed.setFd_bid_closetime(cySuppliers.get(j).getEnddate());
+                            cyOrderDetailed.setFd_supplier_code(cySuppliers.get(j).getSuppliercode());
+                            cyOrderDetailed.setFd_supplier_name(cySuppliers.get(j).getSuppliername());
+
                             //报价子表插入
                             mapper.Person_order(cyOrderDetailed);
                             System.out.println("子表插入数据:" + cyOrderDetailed);
@@ -201,9 +207,11 @@ public class Pur_Enquiry {
                     cyOrder.setFd_apply_purtype(cyInquiryList.get(i).getFd_apply_purtype());
                     cyOrder.setFd_purchase_avaqty(cyInquiryList.get(i).getFd_purchase_avaqty());
                     cyOrder.setFd_inquiryid(cyInquiryList.get(i).getFd_id());
+                    cyOrder.setFd_quotation_tatus("0");
 
                     //报价主表插入
                     mapper.Main_order(cyOrder);
+
                     System.out.println("cyInquiryDetailedList.size()=" + cyInquiryDetailedList.size());
                     for (int j = 0; j < cyInquiryDetailedList.size(); j++) {
 
@@ -231,6 +239,7 @@ public class Pur_Enquiry {
                             cyOrderDetailed.setFd_bid_closetime(cySuppliers.get(k).getEnddate());
                             System.out.println("cyInquiryDetailedList.get(j).getFd_order_person()=" + cyInquiryDetailedList.get(j).getFd_order_person());
                             cyOrderDetailed.setFd_order_person(name);
+                            cyOrderDetailed.setFd_quotation_tatus("0");
 
                             //System.out.println(cyOrderDetailed);
                             //报价子表插入
