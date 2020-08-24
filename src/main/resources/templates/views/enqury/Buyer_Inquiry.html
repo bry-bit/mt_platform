@@ -272,7 +272,7 @@
 
             $.ajax({
                 type: 'post'
-                , url: '/Generating_Quotation?table=primary'
+                , url: '/Generating_Quotation?table=primary&name=' + parent.layui.index.getCookie("Login_Name")
                 , data: JSON.stringify(data)
                 , dataType: 'json'
                 , async: false
