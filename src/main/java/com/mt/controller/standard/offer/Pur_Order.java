@@ -7,6 +7,7 @@ import com.mt.pojo.standard.cy_order;
 import com.mt.pojo.standard.cy_order_detailed;
 import com.mt.util.JSONUtil;
 import com.mt.util.ObjectMapperUtil;
+import com.mt.util.PushUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,7 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 @Controller
 public class Pur_Order {
@@ -130,6 +134,88 @@ public class Pur_Order {
         } catch (Exception e) {
             e.printStackTrace();
             return JSONUtil.toJson("1", "", "查询失败！", "");
+        }
+    }
+
+    /**
+     * 推送采购订单
+     *
+     * @param data
+     * @return
+     */
+    @RequestMapping("Push_Purchase_Order")
+    @ResponseBody
+    public String Push_Purchase_Order(@RequestBody String data) {
+        try {
+            System.out.println("推送的数据：" + data);
+            List<cy_order_detailed> detailedList = JSONObject.parseArray(data, cy_order_detailed.class);
+            System.out.println("整合：" + detailedList);
+            Random random = new Random();
+            String result = "MTCGHT-Z";
+            for (int i = 0; i < 8; i++) {
+                //首字母不能为0
+                result += (random.nextInt(9) + 1);
+            }
+
+            String requestXml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
+                    "<ufinterface sender=\"001\" receiver=\"u8\" roottag=\"purchaseorder\" docid=\"885992348\" proc=\"add\" codeexchanged=\"N\" exportneedexch=\"N\" paginate=\"0\" display=\"采购订单\" family=\"采购管理\">" +
+                    "<purchaseorder>" +
+                    "<header>" +
+                    "<code>" + result + "</code>" +
+                    "<date>" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + "</date>" +
+                    "<vendorcode>" + detailedList.get(0).getFd_supplier_code() + "</vendorcode>" +
+                    "<deptcode>2001</deptcode>" +
+                    "<personcode/>" +
+                    "<purchase_type_code>01</purchase_type_code>" +
+                    "<operation_type_code>普通采购</operation_type_code>" +
+                    "<address/>" +
+                    "<idiscounttaxtype>0</idiscounttaxtype>" +
+                    "<recsend_type/>" +
+                    "<currency_name>人民币</currency_name>" +
+                    "<currency_rate>1</currency_rate>" +
+                    "<tax_rate>" + detailedList.get(0).getFd_tax() + "</tax_rate>" +
+                    "<paycondition_code/>" +
+                    "<traffic_money>0</traffic_money>" +
+                    "<bargain>0</bargain>" +
+//                    "<cappcode></cappcode>" +
+                    "<remark/>" +
+                    "<period/>" +
+                    "<maker>demo</maker>" +
+                    "</header>" +
+                    "<body>" +
+                    "<entry>" +
+                    "<inventorycode>" + detailedList.get(0).getFd_inventory_no() + "</inventorycode>" +
+                    "<checkflag>0</checkflag>" +
+                    "<unitcode>" + detailedList.get(0).getFd_unit() + "</unitcode>" +
+                    "<quantity>" + detailedList.get(0).getFd_purchase_avaqty() + "</quantity>" +
+                    "<num>9</num>" +
+                    "<quotedprice/>" +
+//                    "<price>59.83</price>" +
+                    "<taxprice>" + detailedList.get(0).getFd_offer() + "</taxprice>" +
+//                    "<money>26923.08</money>" +
+//                    "<tax>4576.92</tax>" +
+//                    "<sum>31500</sum>" +
+//                    "<discount/>" +
+//                    "<natprice>59.83</natprice>" +
+//                    "<natmoney>26923.08</natmoney>" +
+//                    "<assistantunit>0502</assistantunit>" +
+//                    "<nattax>4576.92</nattax>" +
+//                    "<natsum>31500</natsum>" +
+//                    "<natdiscount/>" +
+                    "<taxrate>" + detailedList.get(0).getFd_tax() + "</taxrate>" +
+                    "<item_class/>" +
+                    "<item_code/>" +
+                    "<item_name/>" +
+                    "<arrivedate>" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + "</arrivedate>" +
+                    "</entry>" +
+                    "</body>" +
+                    "</purchaseorder>" +
+                    "</ufinterface>";
+            PushUtil.push(requestXml);
+            return JSONUtil.toJson("0", "", "推送成功！", "");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JSONUtil.toJson("1", "", "推送失败！", "");
         }
     }
 }

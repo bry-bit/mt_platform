@@ -75,6 +75,7 @@
             , cols: [
                 [
                     {type: 'numbers'}
+                    , {field: 'fd_id'}
                     , {field: 'fd_inventory_name', title: '存货名称', align: "center", width: 110}
                     , {field: 'fd_inventory_no', title: '存货编号', align: "center", width: 100}
                     , {field: 'fd_model', title: '规格型号', align: "center", width: 100}
@@ -94,13 +95,14 @@
                     }
                 }
                     , {field: 'fd_supplier_name', title: '供应商', align: "center", width: 100}
+                    , {field: 'fd_supplier_code', title: '供应商编码', align: "center", width: 100}
                     , {
                     field: '',
                     title: '<a type="button" class="layui-btn layui-btn-sm" id="winning">中标</a>',
                     align: "center",
                     width: 80
-                    ,templet: function (row) {
-                        var html = '<input type="radio" id="bid" name="' + row.fd_inventory_no + '" lay-filter="layTableRadio">';
+                    , templet: function (row) {
+                        let html = '<input type="radio" id="bid" name="' + row.fd_inventory_no + '" lay-filter="layTableRadio">';
                         return html;
                     }
                 }
@@ -111,7 +113,7 @@
                     align: "center",
                     width: 100,
                     templet: function (row) {
-                        var html = "<input type='checkbox' name='layTableCheckbox' lay-skin='primary' lay-filter='layTableCheckbox'>";
+                        let html = "<input type='checkbox' name='layTableCheckbox' lay-skin='primary' lay-filter='layTableCheckbox'>";
                         return html;
                     }
                 }
@@ -119,7 +121,106 @@
             ]
         });
 
-        
+        $('#winning').on('click', function () {
+            let checkLength = $("input:radio[id='bid']:checked").length;
+            let lists = [];
+            $("input:radio[id='bid']").each(function () {
+                //遍历radio的选择状态
+                if ($(this).is(':checked')) {
+                    let list = {};
+                    list.fd_id = $(this).closest('tr').find('td').eq(1).text();
+                    list.fd_inventory_name = $(this).closest('tr').find('td').eq(2).text();
+                    list.fd_inventory_no = $(this).closest('tr').find('td').eq(3).text();
+                    list.fd_model = $(this).closest('tr').find('td').eq(4).text();
+                    list.cComUnitName = $(this).closest('tr').find('td').eq(5).text();
+                    list.fd_purchase_avaqty = $(this).closest('tr').find('td').eq(6).text();
+                    list.fd_tax = $(this).closest('tr').find('td').eq(7).text();
+                    list.fd_offer = $(this).closest('tr').find('td').eq(8).text();
+                    list.fd_add1 = $(this).closest('tr').find('td').eq(9).text();
+                    list.fd_supplier_name = $(this).closest('tr').find('td').eq(12).text();
+                    list.fd_supplier_code = $(this).closest('tr').find('td').eq(13).text();
+                    lists.push(list);
+                }
+            });
+            // layer.alert(JSON.stringify(lists));
+            layer.confirm('是否选择该数据中标？', function (index) {
+                $.ajax({
+                    type: 'post'
+                    , url: '/Push_Purchase_Order'
+                    , data: JSON.stringify(lists)
+                    , dataType: 'json'
+                    , contentType: 'application/json; charset=utf-8'
+                    , beforeSend: function () {
+                        indexs = layer.load(1);
+                    }
+                    , success: function (res) {
+                        if (res.code == "0") {
+                            layer.close(indexs);
+                            layer.msg('选择成功！', {
+                                offset: '15px'
+                                , icon: 1
+                                , time: 1000
+                            }
+                            // , function () {
+                                // location.reload(index);
+                            // }
+                            );
+                        } else {
+                            layer.close(indexs);
+                            layer.msg(res.msg, {
+                                offset: '15px'
+                                , icon: 2
+                                , time: 1000
+                            });
+                        }
+                    }
+                });
+            });
+        });
+
+
+        $('#return').on('click', function () {
+            var checkStatus = table.checkStatus('demo')
+                , data = checkStatus.data;
+            layer.confirm('<form class="layui-form layui-form-pane" action="">' +
+                '<div class="layui-form-item">' +
+                '<label class="layui-form-label">退回理由</label>' +
+                '    <div class="layui-input-inline">' +
+                '      <input type="text" id="msg" lay-verify="required" placeholder="请输入退回理由" autocomplete="off" class="layui-input">\n' +
+                '    </div>' +
+                '</div></form>', function (index) {
+                $.ajax({
+                    type: 'post'
+                    , url: '/backSubquotation?msg=' + $('#msg').val()
+                    , data: JSON.stringify(data)
+                    , dataType: 'json'
+                    , contentType: 'application/json; charset=utf-8'
+                    , beforeSend: function () {
+                        indexs = layer.load(1);
+                    }
+                    , success: function (res) {
+                        if (res.code == "0") {
+                            layer.close(indexs);
+                            layer.msg('退回成功！', {
+                                offset: '15px'
+                                , icon: 1
+                                , time: 1000
+                            }, function () {
+                                location.reload(index);
+                            });
+                        } else {
+                            layer.close(indexs);
+                            layer.msg('退回失败！', {
+                                offset: '15px'
+                                , icon: 1
+                                , time: 1000
+                            });
+                        }
+                    }
+                });
+                layer.close(index);
+            });
+        });
     });
 </script>
 </body>

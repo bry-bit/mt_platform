@@ -97,4 +97,10 @@
           and fd_offer is not null
           and fd_quotation_tatus = 1
     </select>
+
+    <update id="PO_insert">
+        update MTsupplier.dbo.cy_order
+        set MTsupplier.dbo.cy_order.fd_purorder_no=#{fd_purorder_no}
+        where
+    </update>
 </mapper>

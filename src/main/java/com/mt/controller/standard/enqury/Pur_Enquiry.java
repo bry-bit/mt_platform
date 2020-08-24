@@ -134,7 +134,7 @@ public class Pur_Enquiry {
                         cyOrder.setFd_applicant(name);
                         cyOrder.setFd_creat_person(cyInquiryList.get(i).getCPersonName());
                         cyOrder.setFd_creat_time(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-                        cyOrder.setFd_apply_no(cyInquiryList.get(i).getFd_apply_no());
+                        cyOrder.setFd_apply_no(cyInquiryList.get(i).getFd_no());
                         cyOrder.setFd_apply_time(cyInquiryList.get(i).getFd_apply_time());
                         cyOrder.setFd_apply_department(cyInquiryList.get(i).getCDepName());
                         cyOrder.setFd_apply_bustype(cyInquiryList.get(i).getFd_apply_bustype());
@@ -171,6 +171,9 @@ public class Pur_Enquiry {
                             cyOrderDetailed.setFd_bid_closetime(cySuppliers.get(j).getEnddate());
                             cyOrderDetailed.setFd_supplier_code(cySuppliers.get(j).getSuppliercode());
                             cyOrderDetailed.setFd_supplier_name(cySuppliers.get(j).getSuppliername());
+                            cyOrderDetailed.setFd_add2(cyOrder.getFd_apply_no());
+                            cyOrderDetailed.setFd_ship_addr(cyInquiryDetaileds.get(k).getFd_ship_addr());
+                            cyOrderDetailed.setFd_arrival_house(cyInquiryDetaileds.get(k).getFd_arrival_house());
 
                             //报价子表插入
                             mapper.Person_order(cyOrderDetailed);
@@ -200,7 +203,7 @@ public class Pur_Enquiry {
                     cyOrder.setFd_applicant(name);
                     cyOrder.setFd_creat_person(cyInquiryList.get(i).getCPersonName());
                     cyOrder.setFd_creat_time(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-                    cyOrder.setFd_apply_no(cyInquiryList.get(i).getFd_apply_no());
+                    cyOrder.setFd_apply_no(cyInquiryList.get(i).getFd_no());
                     cyOrder.setFd_apply_time(cyInquiryList.get(i).getFd_apply_time());
                     cyOrder.setFd_apply_department(cyInquiryList.get(i).getCDepName());
                     cyOrder.setFd_apply_bustype(cyInquiryList.get(i).getFd_apply_bustype());
@@ -214,8 +217,6 @@ public class Pur_Enquiry {
 
                     System.out.println("cyInquiryDetailedList.size()=" + cyInquiryDetailedList.size());
                     for (int j = 0; j < cyInquiryDetailedList.size(); j++) {
-
-                        String uuid1 = IDUtil.getUUID();
                         cy_order_detailed cyOrderDetailed = new cy_order_detailed();
                         //循环已选择的供应商
                         System.out.println(" 传入ID=" + cyInquiryDetailedList.get(i).getFd_id());
@@ -223,6 +224,7 @@ public class Pur_Enquiry {
                                 cyInquiryDetailedList.get(j).getFd_id(), null, null);
                         System.out.println("cySuppliers=" + cySuppliers);
                         for (int k = 0; k < cySuppliers.size(); k++) {
+                            String uuid1 = IDUtil.getUUID();
                             System.out.println("人员=" + cyInquiryDetailedList.get(j).getFd_order_person());
                             cyOrderDetailed.setFd_id(uuid1);
                             cyOrderDetailed.setFd_parent_id(cyOrder.getFd_id());
@@ -240,17 +242,20 @@ public class Pur_Enquiry {
                             System.out.println("cyInquiryDetailedList.get(j).getFd_order_person()=" + cyInquiryDetailedList.get(j).getFd_order_person());
                             cyOrderDetailed.setFd_order_person(name);
                             cyOrderDetailed.setFd_quotation_tatus("0");
+                            cyOrderDetailed.setFd_add2(cyOrder.getFd_apply_no());
+                            cyOrderDetailed.setFd_ship_addr(cyInquiryDetailedList.get(j).getFd_ship_addr());
+                            cyOrderDetailed.setFd_arrival_house(cyInquiryDetailedList.get(j).getFd_arrival_house());
 
                             //System.out.println(cyOrderDetailed);
                             //报价子表插入
                             mapper.Person_order(cyOrderDetailed);
 
 
-                            //修改发布后主表的询价单状态
-                            cy_inquiry cyInquiry = JSONObject.parseObject(
-                                    JSONObject.toJSONString(cyInquiryList.get(i)), cy_inquiry.class);
-                            cyInquiry.setFd_status("1");
-                            mapper.Main_inquiry(cyInquiry);
+//                            //修改发布后主表的询价单状态
+//                            cy_inquiry cyInquiry = JSONObject.parseObject(
+//                                    JSONObject.toJSONString(cyInquiryList.get(i)), cy_inquiry.class);
+//                            cyInquiry.setFd_status("1");
+//                            mapper.Main_inquiry(cyInquiry);
 
                             //修改子表发布状态值
                             cy_inquiry_detailed detailed = JSONObject.parseObject(
