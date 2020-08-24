@@ -29,16 +29,18 @@ public class Pur_Order {
      */
     @RequestMapping("Inquiry_Quotation")
     @ResponseBody
-    public String Inquiry_Quotation(String name, String type) {
+    public String Inquiry_Quotation(String name, String type, String fd_quotation_tatus) {
         try {
             //判断人员查询的类型
             if (type.equals("供应商")) {
                 System.out.println("供应商：" + name);
-                List<cy_order> list = mapper.Select_order(null, name);
+                List<cy_order> list = mapper.Select_order(null, name, fd_quotation_tatus);
                 return JSONUtil.toJson("0", list, "获取成功！", "");
             } else {
+                System.out.println(name + "," + type + "," + fd_quotation_tatus);
                 //采购员/技术员
-                List<cy_order> list = mapper.Select_order(name, null);
+                List<cy_order> list = mapper.Select_order(name, null, fd_quotation_tatus);
+                System.out.println("主表数据：" + list);
                 return JSONUtil.toJson("0", list, "获取成功！", "");
             }
         } catch (Exception e) {

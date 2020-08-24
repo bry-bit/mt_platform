@@ -121,7 +121,7 @@ public class Pur_Enquiry {
                         cy_order cyOrder = new cy_order();
                         cyOrder.setFd_id(uuid);
                         cyOrder.setFd_no(fd_no);
-                        cyOrder.setFd_applicant(cyInquiryList.get(i).getCPersonName());
+                        cyOrder.setFd_applicant(name);
                         cyOrder.setFd_creat_person(cyInquiryList.get(i).getCPersonName());
                         cyOrder.setFd_creat_time(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
                         cyOrder.setFd_apply_no(cyInquiryList.get(i).getFd_apply_no());
@@ -153,6 +153,7 @@ public class Pur_Enquiry {
                             cyOrderDetailed.setFd_unit(cyInquiryDetaileds.get(k).getFd_unit());
                             cyOrderDetailed.setFd_purchase_avaqty(cyInquiryDetaileds.get(k).getFd_purchase_avaqty());
                             cyOrderDetailed.setFd_tax(cyInquiryDetaileds.get(k).getFd_tax());
+                            cyOrderDetailed.setFd_order_person(name);
                             //报价子表插入
                             mapper.Person_order(cyOrderDetailed);
                         }
@@ -177,7 +178,7 @@ public class Pur_Enquiry {
                     cy_order cyOrder = new cy_order();
                     cyOrder.setFd_id(IDUtil.getUUID());
                     cyOrder.setFd_no(randomUtil.getNewAutoNum());
-                    cyOrder.setFd_applicant(cyInquiryList.get(i).getCPersonName());
+                    cyOrder.setFd_applicant(name);
                     cyOrder.setFd_creat_person(cyInquiryList.get(i).getCPersonName());
                     cyOrder.setFd_creat_time(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
                     cyOrder.setFd_apply_no(cyInquiryList.get(i).getFd_apply_no());
@@ -216,11 +217,11 @@ public class Pur_Enquiry {
                             cyOrderDetailed.setFd_bid_opentime(cySuppliers.get(k).getStartdate());
                             cyOrderDetailed.setFd_bid_closetime(cySuppliers.get(k).getEnddate());
                             System.out.println("cyInquiryDetailedList.get(j).getFd_order_person()=" + cyInquiryDetailedList.get(j).getFd_order_person());
-                            cyOrderDetailed.setFd_order_person(cyInquiryDetailedList.get(j).getFd_order_person());
+                            cyOrderDetailed.setFd_order_person(name);
 
                             //System.out.println(cyOrderDetailed);
                             //报价子表插入
-//                            mapper.Person_order(cyOrderDetailed);
+                            mapper.Person_order(cyOrderDetailed);
 
                             //修改子表发布状态值
                             cy_inquiry_detailed detailed = JSONObject.parseObject(

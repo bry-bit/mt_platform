@@ -3,15 +3,16 @@
 <mapper namespace="com.mt.mapper.standard.offer.Pur_OrderMapper">
     <!--查询报价单主表数据-->
     <select id="Select_order" resultType="com.mt.pojo.standard.cy_order">
-        <if test="fd_applicant != null and fd_applicant != ''">
-            select *
+        <if test="fd_order_person != null and fd_order_person != ''">
+            select cy_order.*, cod.fd_order_person, cod.fd_supplier_name
             from cy_order
-            where fd_quotation_tatus is null
-              and fd_applicant = #{fd_applicant}
+                         left join cy_order_detailed cod on cy_order.fd_id = cod.fd_parent_id
+            where cod.fd_order_person = #{fd_order_person}
+              and cy_order.fd_quotation_tatus is null
             order by fd_no desc
         </if>
         <if test="fd_supplier_name != null and fd_supplier_name != ''">
-            select distinct o.*
+            select distinct o.*, d.fd_order_person
             from cy_order o
                          left join MTsupplier.dbo.cy_order_detailed d on o.fd_id = d.fd_parent_id
                     where 1 = 1
@@ -25,13 +26,19 @@
             union all
             select distinct *
             from cy_order
+                         left join cy_order_detailed cod on cy_order.fd_id = cod.fd_parent_id
                     where 1 = 1
-                      and fd_quotation_tatus is null
-            <if test="fd_applicant != null and fd_applicant != ''">
-                and fd_applicant = #{fd_applicant}
+            <if test="fd_quotation_tatus == null">
+                and cy_order.fd_quotation_tatus is null
+            </if>
+            <if test="fd_order_person != null and fd_order_person != ''">
+                and cod.fd_order_person = #{fd_order_person}
             </if>
             <if test="fd_supplier_name != null and fd_supplier_name != ''">
-                and fd_supplier_name = #{fd_supplier_name}
+                and cy_order.fd_supplier_name = #{fd_supplier_name}
+            </if>
+            <if test="fd_quotation_tatus != null and fd_quotation_tatus != ''">
+                and cod.fd_quotation_tatus = #{fd_quotation_tatus}
             </if>
             order by fd_no desc
         </if>
@@ -39,11 +46,12 @@
 
     <!--根据报价单主表ID查询报价单子表数据-->
     <select id="Select_orderson" resultType="com.mt.pojo.standard.cy_order_detailed">
-        select cy_order_detailed.*, ComputationUnit.cComUnitName
+        select cy_order_detailed.*, ComputationUnit.cComUnitName, co.*
         from cy_order_detailed
                      left join [UFDATA_001_2015].[dbo].ComputationUnit
                 on cy_order_detailed.fd_unit = ComputationUnit.cComunitCode
-        where fd_parent_id = #{fd_parent_id}
+                     left join cy_order co on cy_order_detailed.fd_parent_id = co.fd_id
+        where cy_order_detailed.fd_parent_id = #{fd_parent_id}
     </select>
 
     <!-- 根据报价单子表ID更新数据-->
@@ -63,6 +71,8 @@
 
     <!--查询到货凭证URL-->
     <select id="select_url" parameterType="String" resultType="String">
-        select fd_arrival_certificate from cy_supplier_deliver_details where fd_id=#{fd_id}
+        select fd_arrival_certificate
+        from cy_supplier_deliver_details
+        where fd_id = #{fd_id}
     </select>
 </mapper>

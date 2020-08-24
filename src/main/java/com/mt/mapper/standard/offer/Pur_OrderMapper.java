@@ -10,8 +10,9 @@ import java.util.List;
 @Repository
 public interface Pur_OrderMapper {
     //查询报价单主表数据
-    List<cy_order> Select_order(@Param("fd_applicant") String fd_applicant
-            , @Param("fd_supplier_name") String fd_supplier_name);
+    List<cy_order> Select_order(@Param("fd_order_person") String fd_order_person
+            , @Param("fd_supplier_name") String fd_supplier_name
+            , @Param("fd_quotation_tatus") String fd_quotation_tatus);
 
     //根据报价单主表ID查询报价单子表数据
     List<cy_order_detailed> Select_orderson(String fd_parent_id);
