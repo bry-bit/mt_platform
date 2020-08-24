@@ -17,7 +17,8 @@ public interface Pur_OrderMapper {
     //根据报价单主表ID查询报价单子表数据
     List<cy_order_detailed> Select_orderson(@Param("fd_order_person") String fd_order_person
             , @Param("fd_supplier_name") String fd_supplier_name
-            , @Param("fd_quotation_tatus") String fd_quotation_tatus);
+            , @Param("fd_quotation_tatus") String fd_quotation_tatus,
+                                            @Param("fd_parent_id") String fd_parent_id);
 
     //根据报价单子表ID更新数据
     void order_sonUpdate(cy_order_detailed orderDetailed);
