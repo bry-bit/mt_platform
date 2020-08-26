@@ -21,17 +21,21 @@ spring:     #定义springmvc视图解析器
       driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
       #      jdbc-url: jdbc:sqlserver://117.50.54.210:1433;DatabaseName=MTsupplier
       jdbc-url: jdbc:sqlserver://127.0.0.1:1433;DatabaseName=MTsupplier
+      #jdbc-url: jdbc:sqlserver://192.168.1.36:1433;DatabaseName=MTsupplier
       username: sa
         #      password: Cgsz@.@
-      password: 12345678
+      password: 1
+      #password: 12345678
     test2:
       #      type: com.alibaba.druid.pool.DruidDataSource
       driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
       #      jdbc-url: jdbc:sqlserver://117.50.54.210:1433;DatabaseName=UFDATA_001_2015
       jdbc-url: jdbc:sqlserver://127.0.0.1:1433;DatabaseName=UFDATA_001_2015
+      #jdbc-url: jdbc:sqlserver://192.168.1.36:1433;DatabaseName=UFDATA_001_2015
       username: sa
       #      password: Cgsz@.@
-      password: 12345678
+      password: 1
+      #password: 12345678
 
 mybatis-plus:
   type-aliases-package: com.mt.pojo.*
