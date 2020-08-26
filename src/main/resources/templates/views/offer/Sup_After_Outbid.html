@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>供应商招标流程————已中标主表</title>
+    <meta name="renderer" content="webkit">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" href="collection/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="collection/layuiadmin/style/admin.css" media="all">
+</head>
+<style>
+    .layui-table-cell {
+        font-size: 12px;
+    }
+</style>
+<body>
+<div class="layui-card">
+    <div class="layui-card-body">
+        <table class="layui-hide" id="demo" lay-filter="demo"></table>
+    </div>
+</div>
+
+<script src="collection/layuiadmin/layui/layui.js"></script>
+<script>
+    Date.prototype.pattern = function (fmt) {
+        let o = {
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "h+": this.getHours() % 12 == 0 ? 12 : this.getHours() % 12, //小时
+            "H+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds(), //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds() //毫秒
+        };
+        let week = {
+            "0": "/u65e5",
+            "1": "/u4e00",
+            "2": "/u4e8c",
+            "3": "/u4e09",
+            "4": "/u56db",
+            "5": "/u4e94",
+            "6": "/u516d"
+        };
+        if (/(y+)/.test(fmt)) {
+            fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        }
+        if (/(E+)/.test(fmt)) {
+            fmt = fmt.replace(RegExp.$1, ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "/u661f/u671f" : "/u5468") : "") + week[this.getDay() + ""]);
+        }
+        for (let k in o) {
+            if (new RegExp("(" + k + ")").test(fmt)) {
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            }
+        }
+        return fmt;
+    };
+
+    layui.config({
+        base: 'collection/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'table'], function () {
+        let $ = layui.$
+            , layer = layui.layer
+            , indexs = ''
+            , table = layui.table;
+
+        table.render({
+            elem: '#demo'
+            , url: '/Inquiry_Quotation?name=' + parent.layui.index.getCookie("Login_Name")
+                + '&type=' + parent.layui.index.getCookie("Login_type") + "&fd_quotation_tatus=2"
+            // , page: true
+            // , limit: 30
+            // , limits: [30, 50, 100]
+            , height: 'full-35'
+            , cols: [
+                [
+                    {type: 'numbers'}
+                    , {field: 'fd_no', title: '询价单号', align: "center"}
+                    , {field: 'fd_inquiryid', title: 'U8请购单号', align: "center"}
+                    , {field: 'fd_apply_bustype', title: '业务类型', align: "center"}
+                    , {field: 'fd_supplier_name', title: '供应商', align: "center"}
+                    , {field: 'fd_remarks', title: '备注', align: "center"}
+                    , {field: 'fd_creat_time', title: '创建时间', align: "center", templet: function (row) {
+                        if (row.fd_creat_time == undefined) {
+                            return "";
+                        } else {
+                            return (new Date(row.fd_creat_time)).pattern("yyyy-MM-dd");
+                        }
+                    }
+                }
+                    , {field: 'fd_applicant', title: '制单人', align: "center"}
+                ]
+            ]
+        });
+
+        //监听行单击事件（双击事件为：rowDouble）
+        table.on('rowDouble(demo)', function (obj) {
+            var data = obj.data;
+            var topLayui = parent === self ? layui : top.layui;
+
+            topLayui.index.openTabsPage("/page?url=/offer/Sup_After_OutbidPrice.html"
+                , data.fd_no);
+
+            //从一个html页面传值到另一个html页面
+            window.localStorage.setItem('fd_id', data.fd_id);
+        });
+    });
+</script>
+</body>
+</html>

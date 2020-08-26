@@ -65,13 +65,13 @@
                 </div>
                 <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu"
                     lay-filter="layadmin-system-side-menu">
-                    <li class="layui-nav-item layui-nav-itemed" id="authorization">
-                        <a href="javascript:;"><i class="layui-icon layui-icon-app"></i>权限管理</a>
-                        <dl class="layui-nav-child">
-                            <dd><a lay-href="page?url=/authorization/Role_Permission.html">角色权限设置</a></dd>
-                            <dd><a lay-href="page?url=/authorization/Staff_List.html">人员权限设置</a></dd>
-                        </dl>
-                    </li>
+                    <!--                    <li class="layui-nav-item layui-nav-itemed" id="authorization">-->
+                    <!--                        <a href="javascript:;"><i class="layui-icon layui-icon-app"></i>权限管理</a>-->
+                    <!--                        <dl class="layui-nav-child">-->
+                    <!--                            <dd><a lay-href="page?url=/authorization/Role_Permission.html">角色权限设置</a></dd>-->
+                    <!--                            <dd><a lay-href="page?url=/authorization/Staff_List.html">人员权限设置</a></dd>-->
+                    <!--                        </dl>-->
+                    <!--                    </li>-->
                     <li class="layui-nav-item layui-nav-itemed" id="invite">
                         <a href="javascript:;"><i class="layui-icon layui-icon-app"></i>基本招标流程</a>
                         <dl class="layui-nav-child">
@@ -80,47 +80,47 @@
                                 <dl class="layui-nav-child">
                                     <dd><a lay-href="page?url=/offer/Sup_No_Primary.html">未报价列表</a></dd>
                                     <dd><a lay-href="page?url=/offer/Sup_After_Quote.html">已报价列表</a></dd>
-                                    <dd><a lay-href="">已中标列表</a></dd>
-                                    <dd><a lay-href="">未中标列表</a></dd>
-                                    <dd><a lay-href="">投标已完结列表</a></dd>
+                                    <dd><a lay-href="page?url=/offer/Sup_After_Outbid.html">已中标列表</a></dd>
+                                    <dd><a lay-href="page?url=/offer/Sup_After_Lose.html">未中标列表</a></dd>
+                                    <!--                                    <dd><a lay-href="">投标已完结列表</a></dd>-->
                                 </dl>
                             </dd>
                             <dd><a lay-href="page?url=/offer/Offer_To_Review.html">报价审核</a></dd>
-                            <dd><a lay-href="">供应商发货</a></dd>
+                            <dd><a lay-href="page?url=/offer/Sup_Delivery.html">供应商发货</a></dd>
                         </dl>
                     </li>
-                    <li class="layui-nav-item layui-nav-itemed">
-                        <a href="javascript:;"><i class="layui-icon layui-icon-app"></i>框架类流程</a>
-                        <dl class="layui-nav-child">
-                            <dd><a lay-href="page?url=/test/Frame_purchase_upload.html">询价列表</a></dd>
-                            <dd><a href="javascript:;">供应商投标流程</a>
-                                <dl class="layui-nav-child">
-                                    <dd><a lay-href="">未报价列表</a></dd>
-                                    <dd><a lay-href="">已报价列表</a></dd>
-                                    <dd><a lay-href="">已中标列表</a></dd>
-                                    <dd><a lay-href="">未中标列表</a></dd>
-                                    <dd><a lay-href="">投标已完结列表</a></dd>
-                                </dl>
-                            </dd>
-                            <dd><a lay-href="">汇总表（对账）</a></dd>
-                            <dd><a lay-href="">预算表</a></dd>
-                        </dl>
-                    </li>
+                                        <li class="layui-nav-item layui-nav-itemed">
+                                            <a href="javascript:;"><i class="layui-icon layui-icon-app"></i>框架类流程</a>
+                                            <dl class="layui-nav-child">
+                                                <dd><a lay-href="page?url=/test/Frame_purchase_upload.html">询价列表</a></dd>
+                                                <dd><a href="javascript:;">供应商投标流程</a>
+                                                    <dl class="layui-nav-child">
+                                                        <dd><a lay-href="">未报价列表</a></dd>
+                                                        <dd><a lay-href="">已报价列表</a></dd>
+                                                        <dd><a lay-href="">已中标列表</a></dd>
+                                                        <dd><a lay-href="">未中标列表</a></dd>
+                                                        <dd><a lay-href="">投标已完结列表</a></dd>
+                                                    </dl>
+                                                </dd>
+                                                <dd><a lay-href="">汇总表（对账）</a></dd>
+                                                <dd><a lay-href="">预算表</a></dd>
+                                            </dl>
+                                        </li>
                     <li class="layui-nav-item layui-nav-itemed">
                         <a href="javascript:;"><i class="layui-icon layui-icon-app"></i>管理类流程</a>
                         <dl class="layui-nav-child">
-                            <dd><a lay-href="page?url=/manage/Manage_purchase_theme.html">采购上传</a></dd>
-                            <dd><a lay-href="">供应商上传</a></dd>
+                            <dd><a lay-href="page?url=/manage/Manage_purchase_theme.html">文件上传列表</a></dd>
+<!--                            <dd><a lay-href="">供应商上传</a></dd>-->
                             <dd><a lay-href="page?url=/manage/Manage_download.html">文件下载列表</a></dd>
                         </dl>
                     </li>
-                    <li class="layui-nav-item layui-nav-itemed">
-                        <a href="javascript:;"><i class="layui-icon layui-icon-app"></i>供应商信息管理</a>
-                        <dl class="layui-nav-child">
-                            <dd><a lay-href="">资质文件</a></dd>
-                            <dd><a lay-href="">供应商调查表</a></dd>
-                        </dl>
-                    </li>
+                                        <li class="layui-nav-item layui-nav-itemed">
+                                            <a href="javascript:;"><i class="layui-icon layui-icon-app"></i>供应商信息管理</a>
+                                            <dl class="layui-nav-child">
+                                                <dd><a lay-href="">资质文件</a></dd>
+                                                <dd><a lay-href="">供应商调查表</a></dd>
+                                            </dl>
+                                        </li>
                 </ul>
             </div>
         </div>
@@ -176,9 +176,9 @@
             , element = layui.element;
 
         var UserName = parent.layui.index.getCookie("Login_Name");
-        if (UserName != ''){
+        if (UserName != '') {
             $('#username').html(parent.layui.index.getCookie("Login_Name"));
-        }else {
+        } else {
             location.href = '/page?url=user/login';
         }
     });

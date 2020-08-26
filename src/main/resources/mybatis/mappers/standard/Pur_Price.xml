@@ -66,7 +66,8 @@
                                         , fd_creat_person
                                         , fd_creat_time
                                         , fd_supplier_name
-                                        , fd_supplier_code)
+                                        , fd_supplier_code
+                                        , fd_purorder_no)
         values ( #{fd_id}
                , #{fd_order_id}
                , #{fd_no}
@@ -74,7 +75,8 @@
                , #{fd_creat_person}
                , getdate()
                , #{fd_supplier_name}
-               , #{fd_supplier_code})
+               , #{fd_supplier_code}
+               , #{fd_purorder_no})
     </insert>
 
     <!--更新供应商发货主表数据-->
@@ -109,7 +111,8 @@
                                                 , fd_purchase_avaqty
                                                 , fd_tax
                                                 , fd_ship_addr
-                                                , fd_arrival_house)
+                                                , fd_arrival_house
+                                                , fd_order_person)
         values ( #{fd_id}
                , #{fd_parent_id}
                , #{fd_order_ids}
@@ -120,7 +123,8 @@
                , #{fd_purchase_avaqty}
                , #{fd_tax}
                , #{fd_ship_addr}
-               , #{fd_arrival_house})
+               , #{fd_arrival_house}
+               , #{fd_order_person})
     </insert>
 
     <!--更新供应商子表数据-->
@@ -138,4 +142,19 @@
         from cy_supplier_deliver_details
         where fd_parent_id = #{fd_parent_id}
     </select>
+
+    <!-- 查询主表数据 -->
+    <select id="find_detail" resultType="com.mt.pojo.standard.cy_supplier_deliver">
+        select cy_supplier_deliver.*, Person.cPersonCode
+        from cy_supplier_deliver
+                     left join [UFDATA_001_2015].[dbo].Person
+                on Person.cPersonName = cy_supplier_deliver.fd_creat_person
+        where cy_supplier_deliver.fd_id = #{fd_id}
+    </select>
+
+    <update id="update_number">
+        update MTsupplier.dbo.cy_supplier_deliver_details
+        set MTsupplier.dbo.cy_supplier_deliver_details.fd_shipment_qty=#{fd_shipment_qty}
+        where MTsupplier.dbo.cy_supplier_deliver_details.fd_id=#{fd_id}
+    </update>
 </mapper>

@@ -28,4 +28,10 @@ public interface Pur_OrderMapper {
 
     //采购员报价审核，进行中标/退回选择的数据列表
     List<cy_order_detailed> audit(String fd_order_person);
+
+    //查询U8供应商档案表的名称
+    String SelSup_name(String cVenCode);
+
+    //中标数据生成后，其他数据均为未中标
+    void lose_a_bid(cy_order_detailed detailed);
 }

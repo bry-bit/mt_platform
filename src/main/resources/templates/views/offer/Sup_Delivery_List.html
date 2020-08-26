@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>供应商招标流程————供应商发货</title>
+    <meta name="renderer" content="webkit">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" href="collection/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="collection/layuiadmin/style/admin.css" media="all">
+</head>
+<style>
+    .layui-table-cell {
+        font-size: 12px;
+    }
+</style>
+<body>
+<div class="layui-card">
+    <div class="layui-card-body">
+        <a type="button" class="layui-btn layui-btn-normal" id="publish">推U8到货单</a>
+        <hr>
+        <table class="layui-hide" id="demo" lay-filter="demo"></table>
+    </div>
+</div>
+
+<script src="collection/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: 'collection/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'table', 'upload'], function () {
+        let $ = layui.$
+            , layer = layui.layer
+            , indexs = ''
+            , table = layui.table;
+
+        table.render({
+            elem: '#demo'
+            , url: '/Delivery_SubTable?fd_parent_id=' + window.localStorage.getItem('fd_id')
+            , height: 'full-75'
+            , cols: [
+                [
+                    {type: 'checkbox'}
+                    , {field: 'fd_id', title: 'ID', align: "center", hide: true}
+                    // , {field: 'fd_parent_id', title: '关联主表ID', align: "center"}
+                    // , {field: 'fd_order_ids', title: '报价单子表id', align: "center"}
+                    , {field: 'fd_inventory_no', title: '存货编号', align: "center", width: 100}
+                    , {field: 'fd_inventory_name', title: '存货名称', align: "center", width: 100}
+                    , {field: 'fd_model', title: '规格型号', align: "center", width: 100}
+                    , {field: 'fd_unit', title: '单位', align: "center", width: 80}
+                    , {field: 'fd_purchase_avaqty', title: '可采购数量', align: "center", width: 100}
+                    // , {field: 'fd_tax', title: '税率', align: "center", width: 100}
+                    , {field: 'fd_ship_addr', title: '发货地址', align: "center", width: 100}
+                    , {field: 'fd_arrival_house', title: '到货仓库', align: "center", width: 100}
+                    , {field: 'fd_shipment_qty', title: '发货数量', align: "center", width: 100, edit: 'text'}
+                    , {field: 'fd_storage_qty', title: '入库数量', align: "center", width: 100}
+                    , {field: 'fd_billing_status', title: '开票状态', align: "center", width: 100}
+                    , {field: 'fd_invoice_amount', title: '发票金额（含税）', align: "center", width: 100}
+                    , {field: 'fd_payment_status', title: '付款状态', align: "center", width: 100}
+                    , {field: 'fd_payment_amount', title: '付款金额（含税）', align: "center", width: 100}
+                    , {field: 'fd_arrival_certificate', title: '到货凭证', align: "center", width: 80}
+                ]
+            ]
+        });
+
+        $('#publish').on('click', function () {
+            let checkStatus = table.checkStatus('demo')
+                , data = checkStatus.data;
+            // layer.alert(JSON.stringify(data));
+            $.ajax({
+                url: '/PushToTheInvoice'
+                , type: 'post'
+                , data: JSON.stringify(data)
+                , dataType: 'json'
+                , contentType: 'application/json; charset=utf-8'
+                , beforeSend: function () {
+                    indexs = layer.load(1);
+                }
+                , success: function (res) {
+                    if (res.code === "0") {
+                        layer.close(indexs);
+                        layer.msg('推送成功！', {
+                            offset: '15px'
+                            , icon: 1
+                            , time: 1000
+                        }
+                        // , function () {
+                        //     location.reload();
+                        // }
+                        );
+                    } else {
+                        layer.close(indexs);
+                        layer.msg('推送失败！', {
+                            offset: '15px'
+                            , icon: 2
+                            , time: 1000
+                        });
+                    }
+                }
+            })
+        });
+    });
+</script>
+</body>
+</html>

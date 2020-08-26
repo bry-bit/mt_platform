@@ -75,7 +75,7 @@
             , cols: [
                 [
                     {type: 'numbers'}
-                    , {field: 'fd_id'}
+                    , {field: 'fd_id', hide: true}
                     , {field: 'fd_inventory_name', title: '存货名称', align: "center", width: 110}
                     , {field: 'fd_inventory_no', title: '存货编号', align: "center", width: 100}
                     , {field: 'fd_model', title: '规格型号', align: "center", width: 100}
@@ -95,7 +95,18 @@
                     }
                 }
                     , {field: 'fd_supplier_name', title: '供应商', align: "center", width: 100}
-                    , {field: 'fd_supplier_code', title: '供应商编码', align: "center", width: 100}
+                    , {field: 'fd_supplier_code', title: '供应商编码', align: "center", width: 100, hide: true}
+                    , {field: 'fd_ship_addr', hide: true}
+                    , {field: 'fd_arrival_house', hide: true}
+                    , {field: 'fd_apply_no', hide: true}
+                    , {field: 'fd_apply_bustype', hide: true}
+                    , {field: 'cDepCode', hide: true}
+                    , {field: 'fd_unit', hide: true}
+                    , {field: 'fd_inquiry_ids', hide: true}
+                    , {field: 'fd_order_person', hide: true}
+                    , {field: 'fd_no', hide: true}
+                    , {field: 'fd_parent_id', hide: true}
+                    , {field: 'cPersonCode', hide: true}
                     , {
                     field: '',
                     title: '<a type="button" class="layui-btn layui-btn-sm" id="winning">中标</a>',
@@ -139,6 +150,17 @@
                     list.fd_add1 = $(this).closest('tr').find('td').eq(9).text();
                     list.fd_supplier_name = $(this).closest('tr').find('td').eq(12).text();
                     list.fd_supplier_code = $(this).closest('tr').find('td').eq(13).text();
+                    list.fd_ship_addr = $(this).closest('tr').find('td').eq(14).text();
+                    list.fd_arrival_house = $(this).closest('tr').find('td').eq(15).text();
+                    list.fd_apply_no = $(this).closest('tr').find('td').eq(16).text();
+                    list.fd_apply_bustype = $(this).closest('tr').find('td').eq(17).text();
+                    list.cDepCode = $(this).closest('tr').find('td').eq(18).text();
+                    list.fd_unit = $(this).closest('tr').find('td').eq(19).text();
+                    list.fd_inquiry_ids = $(this).closest('tr').find('td').eq(20).text();
+                    list.fd_order_person = $(this).closest('tr').find('td').eq(21).text();
+                    list.fd_no = $(this).closest('tr').find('td').eq(22).text();
+                    list.fd_parent_id = $(this).closest('tr').find('td').eq(23).text();
+                    list.cPersonCode = $(this).closest('tr').find('td').eq(24).text();
                     lists.push(list);
                 }
             });
@@ -156,15 +178,13 @@
                     , success: function (res) {
                         if (res.code == "0") {
                             layer.close(indexs);
-                            layer.msg('选择成功！', {
+                            layer.msg(res.msg, {
                                 offset: '15px'
                                 , icon: 1
                                 , time: 1000
-                            }
-                            // , function () {
+                            }, function () {
                                 // location.reload(index);
-                            // }
-                            );
+                            });
                         } else {
                             layer.close(indexs);
                             layer.msg(res.msg, {

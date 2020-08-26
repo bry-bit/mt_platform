@@ -18,7 +18,7 @@ public class cy_order_detailed {
     @Column(name = "fd_parent_id")
     private String fd_parent_id;//关联主表ID
     @Column(name = "fd_inquiry_ids")
-    private String fd_inquiry_ids;//询价单子表ID
+    private String fd_inquiry_ids;//U8请购单子表行号
     @Column(name = "fd_order_person")
     private String fd_order_person;//采购员
     @Column(name = "fd_inventory_name")
@@ -80,4 +80,9 @@ public class cy_order_detailed {
     @Column(name = "fd_add2")
     private String fd_add2;//备用字段
     private String cComUnitName;
+    private String fd_apply_no;//U8请购单单号
+    private String fd_apply_bustype;//U8请购单业务类型
+    private String fd_apply_department;//U8请购单部门
+    private String cDepCode;
+    private String cPersonCode;
 }

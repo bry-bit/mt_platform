@@ -4,7 +4,7 @@
     <!--查询报价单主表数据-->
     <select id="Select_order" resultType="com.mt.pojo.standard.cy_order">
         <if test="fd_order_person != null and fd_order_person != ''">
-            select cy_order.*, cod.fd_order_person, cod.fd_supplier_name
+            select distinct cy_order.*, cod.fd_order_person
             from cy_order
                          left join cy_order_detailed cod on cy_order.fd_id = cod.fd_parent_id
             where #{fd_order_person} in
@@ -46,19 +46,19 @@
 
     <!--根据报价单主表ID查询报价单子表数据-->
     <select id="Select_orderson" resultType="com.mt.pojo.standard.cy_order_detailed">
-        select cy_order_detailed.*, ComputationUnit.cComUnitName
+        select distinct cy_order_detailed.*, ComputationUnit.cComUnitName
         from cy_order_detailed
                      left join [UFDATA_001_2015].[dbo].ComputationUnit
                 on cy_order_detailed.fd_unit = ComputationUnit.cComunitCode
                 where fd_parent_id = #{fd_parent_id}
                   and cy_order_detailed.fd_quotation_tatus = #{fd_quotation_tatus}
         <if test="fd_order_person != null and fd_order_person != ''">
-            and #{fd_order_person} in (select fd_order_person
+            and #{fd_order_person} in (select distinct fd_order_person
                                        from cy_order_detailed
                                        where fd_parent_id = #{fd_parent_id})
         </if>
         <if test="fd_supplier_name != null and fd_supplier_name != ''">
-            and #{fd_supplier_name} in (select fd_supplier_name
+            and #{fd_supplier_name} in (select distinct fd_supplier_name
                                         from MTsupplier.dbo.cy_order
                                         where cy_order.fd_id = #{fd_parent_id})
         </if>
@@ -88,19 +88,40 @@
 
     <!-- 采购员报价审核，进行中标/退回选择的数据列表 -->
     <select id="audit" resultType="com.mt.pojo.standard.cy_order_detailed">
-        select cy_order_detailed.*, ComputationUnit.cComUnitName
+        select cy_order_detailed.*, ComputationUnit.cComUnitName, co.*, Department.cDepCode, Person.cPersonCode
         from MTsupplier.dbo.cy_order_detailed
                      left join [UFDATA_001_2015].[dbo].ComputationUnit
                 on cy_order_detailed.fd_unit = ComputationUnit.cComunitCode
-        where fd_bid_closetime <![CDATA[ < ]]> (select cast(GETDATE() as date) as 'now')
-          and fd_order_person = #{fd_order_person}
-          and fd_offer is not null
-          and fd_quotation_tatus = 1
+                     left join cy_order co on cy_order_detailed.fd_parent_id = co.fd_id
+                     left join [UFDATA_001_2015].[dbo].Department on Department.cDepName = co.fd_apply_department
+                     left join [UFDATA_001_2015].[dbo].Person on Person.cPersonName = cy_order_detailed.fd_order_person
+        where cy_order_detailed.fd_bid_closetime <![CDATA[ < ]]> (select cast(GETDATE() as date) as 'now')
+          and cy_order_detailed.fd_order_person = #{fd_order_person}
+          and cy_order_detailed.fd_offer is not null
+          and cy_order_detailed.fd_quotation_tatus = 1
+        order by cy_order_detailed.fd_inventory_no, cy_order_detailed.fd_supplier_name desc
     </select>
 
-    <update id="PO_insert">
-        update MTsupplier.dbo.cy_order
-        set MTsupplier.dbo.cy_order.fd_purorder_no=#{fd_purorder_no}
-        where
+    <!-- 查询U8供应商档案表的名称 -->
+    <select id="SelSup_name" resultType="String">
+        select cVenName
+        from [UFDATA_001_2015].[dbo].Vendor
+        where cVenCode = #{cVenCode}
+    </select>
+    <!--    <update id="PO_insert">-->
+    <!--        update MTsupplier.dbo.cy_order-->
+    <!--        set MTsupplier.dbo.cy_order.fd_purorder_no=#{fd_purorder_no}-->
+    <!--        where-->
+    <!--    </update>-->
+
+    <!-- 中标数据生成后，其他数据均为未中标-->
+    <update id="lose_a_bid">
+        update cy_order_detailed
+        set fd_quotation_tatus=3
+        where fd_inquiry_ids = #{fd_inquiry_ids}
+          and fd_supplier_name != #{fd_supplier_name}
+          and fd_inventory_name = #{fd_inventory_name}
+          and fd_inventory_no = #{fd_inventory_no}
+          and fd_model = #{fd_model}
     </update>
 </mapper>

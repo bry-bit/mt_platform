@@ -11,7 +11,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class cy_supplier_deliver {
-
     private String fd_id;//ID
     private String fd_order_id;//报价单id
     private String fd_no;//U8请购单号
@@ -25,4 +24,5 @@ public class cy_supplier_deliver {
     private String fd_modificatio_time;//修改时间
     private String fd_add1;//备用字段
     private String fd_add2;//备用字段
+    private String cPersonCode;
 }
